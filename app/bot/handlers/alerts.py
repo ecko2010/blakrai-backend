@@ -3,6 +3,7 @@ Alert handlers — create, view, manage, delete user alerts.
 Uses FSM for multi-step alert creation flow.
 """
 
+import asyncio
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
@@ -244,7 +245,7 @@ async def msg_alert_coin(message: Message, db_user: User, lang: str, state: FSMC
     # Validate coin exists on exchange
     try:
         from app.exchanges.manager import exchange_manager
-        best = await exchange_manager.get_best_price(f"{coin}USDT")
+        best = await asyncio.wait_for(exchange_manager.get_best_price(f"{coin}USDT"), timeout=5.0)
         if best.get("best_bid") is None:
             await message.answer(t("alert_coin_not_found", lang, coin=coin), parse_mode="HTML")
             return

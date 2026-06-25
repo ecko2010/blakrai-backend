@@ -251,9 +251,12 @@ async def reply_keyboard_router(message: Message, db_user: User, lang: str, stat
         )
 
     elif callback_data == "subscription":
+        tier_name = {"free": "Free", "pro": "Pro", "elite": "Elite"}.get(
+            db_user.tier.value, "Free"
+        ) if db_user.tier else "Free"
         await _send_or_edit(
             chat_id, bot,
-            text=t("subscription_info", lang),
+            text=t("subscription_info", lang, current_tier=tier_name),
             reply_markup=subscription_kb(lang),
             reply_kb=subscription_reply_kb(lang),
         )
@@ -541,12 +544,13 @@ async def reply_keyboard_router(message: Message, db_user: User, lang: str, stat
 
     elif callback_data == "my_sub":
         tier_name = db_user.tier.value.capitalize() if db_user.tier else "Free"
-        expires = ""
         if db_user.subscription_expires_at:
-            expires = f"\n⏰ {t('expires', lang)}: {db_user.subscription_expires_at.strftime('%Y-%m-%d')}"
+            expires = db_user.subscription_expires_at.strftime('%Y-%m-%d')
+        else:
+            expires = "---"
         await _send_or_edit(
             chat_id, bot,
-            text=f"📋 <b>{t('my_subscription', lang)}</b>\n\n🏷 {t('tier', lang)}: <b>{tier_name}</b>{expires}",
+            text=t('my_subscription', lang, tier=tier_name, expires=expires),
             reply_markup=subscription_kb(lang),
         )
 

@@ -61,6 +61,8 @@ def _set_cached(key: str, value: Any) -> Any:
 
 # ─── Helpers ────────────────────────────────────────────
 
+from markupsafe import Markup
+
 def _status_badge(status: str) -> str:
     m = {
         "active": ("badge-active", "Active"),
@@ -73,18 +75,16 @@ def _status_badge(status: str) -> str:
         "cancelled": ("badge-expired", "Cancelled"),
     }
     cls, label = m.get(status, ("badge-secondary", status))
-    return f'<span class="badge {cls}">{label}</span>'
-
+    return Markup(f'<span class="badge {cls}">{label}</span>')
 
 def _direction_badge(direction: str) -> str:
     if direction == "long":
-        return '<span class="badge badge-long">LONG</span>'
-    return '<span class="badge badge-short">SHORT</span>'
-
+        return Markup('<span class="badge badge-long">LONG</span>')
+    return Markup('<span class="badge badge-short">SHORT</span>')
 
 def _tier_badge(tier: str) -> str:
     m = {"free": "secondary", "pro": "info", "elite": "warning"}
-    return f'<span class="badge bg-{m.get(tier, "secondary")}">{tier.upper()}</span>'
+    return Markup(f'<span class="badge bg-{m.get(tier, "secondary")}">{tier.upper()}</span>')
 
 
 def _pnl_color(pnl) -> str:
