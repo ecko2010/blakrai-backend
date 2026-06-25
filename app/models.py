@@ -89,6 +89,15 @@ class User(Base):
     subscriptions = relationship("Subscription", back_populates="user", lazy="selectin")
     payments = relationship("Payment", back_populates="user", lazy="selectin")
 
+    @property
+    def subscription_expires_at(self) -> datetime.datetime | None:
+        """Returns the expiration date of the latest active subscription."""
+        now = datetime.datetime.now(datetime.timezone.utc)
+        active_subs = [s for s in self.subscriptions if s.is_active and s.expires_at > now]
+        if not active_subs:
+            return None
+        return max(s.expires_at for s in active_subs)
+
 
 class Signal(Base):
     __tablename__ = "signals"
