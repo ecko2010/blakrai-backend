@@ -5,7 +5,7 @@
 <div class="page-header">
   <div>
     <h1>
-      {{ signal.coin_symbol }} {{ signal.direction.value|direction_badge }} {{ signal.status.value|status_badge }}
+      {{ signal.coin_symbol }} {{ signal.direction.value|direction_badge|safe }} {{ signal.status.value|status_badge|safe }}
     </h1>
     <div class="page-meta">Signal #{{ signal.id }} · {{ signal.exchange }} · {{ signal.timeframe }}</div>
   </div>

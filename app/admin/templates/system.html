@@ -24,7 +24,7 @@
         <span>Redis</span>
       </div>
       {% if redis_info %}
-      <small class="text-muted mt-1 d-block">{{ redis_info.used_memory }} · {{ redis_info.keys }} keys</small>
+      <small class="text-muted mt-1 d-block">{{ redis_info.used_memory }} · {{ redis_info.total_keys }} keys</small>
       {% endif %}
     </div>
   </div>
@@ -102,7 +102,7 @@
           <tbody>
             <tr><td class="text-muted">Memory</td><td>{{ redis_info.used_memory }}</td></tr>
             <tr><td class="text-muted">Clients</td><td>{{ redis_info.connected_clients }}</td></tr>
-            <tr><td class="text-muted">Keys</td><td>{{ redis_info.keys }}</td></tr>
+            <tr><td class="text-muted">Keys</td><td>{{ redis_info.total_keys }}</td></tr>
           </tbody>
         </table>
       </div>

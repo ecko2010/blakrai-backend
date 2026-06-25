@@ -63,7 +63,7 @@
           <td><code>{{ u.telegram_id }}</code></td>
           <td>{% if u.username %}@{{ u.username }}{% else %}<span class="text-muted">—</span>{% endif %}</td>
           <td>{{ u.first_name or '—' }}</td>
-          <td>{{ u.tier.value|tier_badge }}</td>
+          <td>{{ u.tier.value|tier_badge|safe }}</td>
           <td>{{ u.language.value if u.language else '—' }}</td>
           <td>
             {% if u.is_banned %}
@@ -88,7 +88,7 @@
                 <button class="btn btn-xs btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" title="Change tier">
                   <i class="bi bi-arrow-up-circle"></i>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-dark">
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark" style="position: absolute; z-index: 9999;">
                   {% for t in tiers %}
                   <li>
                     <form method="post" action="/admin/users/{{ u.id }}/tier">

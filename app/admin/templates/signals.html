@@ -110,13 +110,13 @@
         <tr>
           <td><a href="/admin/signals/{{ s.id }}" class="text-info">#{{ s.id }}</a></td>
           <td><strong>{{ s.coin_symbol }}</strong></td>
-          <td>{{ s.direction.value|direction_badge }}</td>
+          <td>{{ s.direction.value|direction_badge|safe }}</td>
           <td>{{ s.entry_price|fmt_price }}</td>
           <td class="small">
             {{ s.tp1|fmt_price }} / {{ s.tp2|fmt_price }} / {{ s.tp3|fmt_price }}
           </td>
           <td>{{ s.stop_loss|fmt_price }}</td>
-          <td>{{ s.status.value|status_badge }}</td>
+          <td>{{ s.status.value|status_badge|safe }}</td>
           <td class="{{ s.pnl_percent|pnl_color }}">{{ s.pnl_percent|fmt_pct }}</td>
           <td>{{ s.exchange }}</td>
           <td>{{ s.min_tier.value if s.min_tier else 'FREE' }}</td>

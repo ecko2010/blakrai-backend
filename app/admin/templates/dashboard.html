@@ -142,11 +142,11 @@
         <tr>
           <td><a href="/admin/signals/{{ s.id }}" class="text-blue text-decoration-none fw-bold">#{{ s.id }}</a></td>
           <td><strong>{{ s.coin_symbol }}</strong></td>
-          <td>{{ s.direction.value|direction_badge }}</td>
+          <td>{{ s.direction.value|direction_badge|safe }}</td>
           <td>{{ s.entry_price|fmt_price }}</td>
           <td class="text-red">{{ s.stop_loss|fmt_price }}</td>
           <td class="text-green">{{ s.tp1|fmt_price }}</td>
-          <td>{{ s.status.value|status_badge }}</td>
+          <td>{{ s.status.value|status_badge|safe }}</td>
           <td class="{{ s.pnl_percent|pnl_color }} fw-bold">{{ s.pnl_percent|fmt_pct }}</td>
           <td>{{ "%.0f"|format(s.confidence_score) }}%</td>
           <td class="text-muted">{{ s.exchange }}</td>

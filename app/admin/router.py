@@ -63,14 +63,14 @@ def _set_cached(key: str, value: Any) -> Any:
 
 def _status_badge(status: str) -> str:
     m = {
-        "active": ("badge-active", "Активний"),
+        "active": ("badge-active", "Active"),
         "tp1_hit": ("badge-tp", "TP1 ✓"),
         "tp2_hit": ("badge-tp", "TP2 ✓"),
         "tp3_hit": ("badge-tp", "TP3 ✓"),
         "stopped": ("badge-stopped", "SL ✗"),
-        "expired": ("badge-expired", "Прот."),
-        "closed": ("badge-expired", "Закрито"),
-        "cancelled": ("badge-expired", "Скасов."),
+        "expired": ("badge-expired", "Expired"),
+        "closed": ("badge-expired", "Closed"),
+        "cancelled": ("badge-expired", "Cancelled"),
     }
     cls, label = m.get(status, ("badge-secondary", status))
     return f'<span class="badge {cls}">{label}</span>'
@@ -836,7 +836,7 @@ async def _fetch_redis_info() -> tuple[bool, dict]:
         return True, {
             "used_memory": info.get("used_memory_human", "?"),
             "connected_clients": info.get("connected_clients", 0),
-            "keys": keys,
+            "total_keys": keys,
         }
     except Exception:
         return False, {}
