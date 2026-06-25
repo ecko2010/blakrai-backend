@@ -115,7 +115,7 @@ async def cmd_start(message: Message, db_user: User, lang: str):
             if referrer_id != db_user.telegram_id and db_user.referred_by is None:
                 async with async_session() as session:
                     db_user.referred_by = referrer_id
-                    session.add(db_user)
+                    await session.merge(db_user)
                     await session.commit()
         except (ValueError, TypeError):
             pass
@@ -160,7 +160,7 @@ async def cb_set_lang(callback: CallbackQuery, db_user: User, lang: str):
 
     async with async_session() as session:
         db_user.language = Language(new_lang)
-        session.add(db_user)
+        await session.merge(db_user)
         await session.commit()
 
     from app.bot.middlewares.auth import AuthMiddleware
