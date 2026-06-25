@@ -199,7 +199,7 @@ async def cb_help(callback: CallbackQuery, db_user: User, lang: str):
 # ─── Reply Keyboard routing with submenus ────────────────
 
 _REPLY_TEXTS: set[str] = set()
-for _l in ("uk", "en", "ru"):
+for _l in ("uk", "en", "ru", "ar"):
     _REPLY_TEXTS.update(get_all_reply_texts(_l).keys())
 
 
@@ -216,7 +216,7 @@ async def reply_keyboard_router(message: Message, db_user: User, lang: str, stat
 
     callback_data = mapping.get(text)
     if not callback_data:
-        for check_lang in ("uk", "en", "ru"):
+        for check_lang in ("uk", "en", "ru", "ar"):
             m = get_all_reply_texts(check_lang)
             if text in m:
                 callback_data = m[text]

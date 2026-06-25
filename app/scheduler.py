@@ -285,7 +285,7 @@ async def task_daily_digest():
         digest = await generate_daily_digest()
         if digest.stats and digest.stats.total > 0:
             img_by_lang: dict[str, bytes] = {}
-            for lang in ("uk", "en", "ru"):
+            for lang in ("uk", "en", "ru", "ar"):
                 img_by_lang[lang] = await generate_digest_image(
                     period="daily",
                     date_range=digest.date_range,
@@ -316,7 +316,7 @@ async def task_weekly_digest():
         digest = await generate_weekly_digest()
         if digest.stats and digest.stats.total > 0:
             img_by_lang: dict[str, bytes] = {}
-            for lang in ("uk", "en", "ru"):
+            for lang in ("uk", "en", "ru", "ar"):
                 img_by_lang[lang] = await generate_digest_image(
                     period="weekly",
                     date_range=digest.date_range,
@@ -545,7 +545,7 @@ async def _broadcast_new_signals(signals):
             )
             img_full_by_lang: dict[str, bytes] = {}
             img_free_by_lang: dict[str, bytes] = {}
-            for _lang in ("uk", "en", "ru"):
+            for _lang in ("uk", "en", "ru", "ar"):
                 img_full_by_lang[_lang] = await generate_signal_card(**_card_args, lang=_lang)
 
             # Serialize data for use outside ORM session scope
@@ -570,7 +570,7 @@ async def _broadcast_new_signals(signals):
             potential_pct = abs(signal.tp1 - signal.entry_price) / signal.entry_price * 100 if signal.entry_price else 0
 
             # Pre-generate FREE cards per language
-            for _lang in ("uk", "en", "ru"):
+            for _lang in ("uk", "en", "ru", "ar"):
                 img_free_by_lang[_lang] = await generate_signal_card_free(
                     coin_symbol=sig_data["coin"],
                     direction=sig_data["direction"],
@@ -816,7 +816,7 @@ async def task_free_channel_delayed_signals():
                 pnl_str = f"{pnl:+.2f}%"
                 direction_text = "🟢 LONG" if signal.direction.value == "long" else "🔴 SHORT"
 
-                for lang in ("uk", "en", "ru"):
+                for lang in ("uk", "en", "ru", "ar"):
                     free_cid = settings.get_channel_id(lang, "free")
                     if not free_cid:
                         continue

@@ -400,7 +400,7 @@ class SignalTracker:
 
         # Generate result card per language
         img_by_lang: dict[str, bytes] = {}
-        for lang in ("uk", "en", "ru"):
+        for lang in ("uk", "en", "ru", "ar"):
             try:
                 img_by_lang[lang] = await generate_result_card(
                     coin_symbol=signal.coin_symbol,
