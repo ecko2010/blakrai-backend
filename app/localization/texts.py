@@ -3504,3 +3504,21 @@ Check active signals to not miss opportunities!"""
         "ar": "📡 إشارات نشطة",
     },
 }
+
+
+def t(key: str, lang: str = "en", **kwargs: Any) -> str:
+    """Get localized text by key and language, with placeholder formatting."""
+    entry = _TEXTS.get(key)
+    if entry is None:
+        return f"[missing: {key}]"
+    text = entry.get(lang, entry.get("en", f"[no lang: {key}]."))
+    if kwargs:
+        try:
+            text = text.format(**kwargs)
+        except KeyError:
+            pass
+    return text
+
+def get_all_keys() -> list[str]:
+    """Return all localization keys."""
+    return list(_TEXTS.keys())
