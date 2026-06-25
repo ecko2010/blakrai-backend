@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Користувачі{% endblock %}
+{% block title %}Users{% endblock %}
 
 {% block content %}
 <div class="page-header">
-  <h1><i class="bi bi-people-fill text-blue"></i> Користувачі</h1>
+  <h1><i class="bi bi-people-fill text-blue"></i> Users</h1>
   <span class="page-meta">{{ total }} загалом</span>
 </div>
 
@@ -38,7 +38,7 @@
 <!-- Users table -->
 <div class="card">
   <div class="card-header d-flex justify-content-between">
-    <span>Користувачів: {{ total }}</span>
+    <span>Usersв: {{ total }}</span>
     <span>Стор. {{ page }} / {{ total_pages }}</span>
   </div>
   <div class="table-responsive">
@@ -104,7 +104,7 @@
         </tr>
         {% endfor %}
         {% if not users %}
-        <tr><td colspan="9" class="text-center text-muted py-4">Користувачів не знайдено</td></tr>
+        <tr><td colspan="9" class="text-center text-muted py-4">Usersв не знайдено</td></tr>
         {% endif %}
       </tbody>
     </table>

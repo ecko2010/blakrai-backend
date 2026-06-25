@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uk" data-bs-theme="dark">
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -193,59 +193,59 @@
         <ul class="nav flex-column flex-grow-1 py-2">
             <li class="nav-item">
                 <a class="nav-link {% if active_page == 'dashboard' %}active{% endif %}" href="/admin/">
-                    <i class="bi bi-grid-1x2-fill"></i> Дашборд
+                    <i class="bi bi-grid-1x2-fill"></i> Dashboard
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if active_page == 'signals' %}active{% endif %}" href="/admin/signals">
-                    <i class="bi bi-broadcast-pin"></i> Сигнали
+                    <i class="bi bi-broadcast-pin"></i> Signals
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if active_page == 'users' %}active{% endif %}" href="/admin/users">
-                    <i class="bi bi-people-fill"></i> Користувачі
+                    <i class="bi bi-people-fill"></i> Users
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if active_page == 'learning' %}active{% endif %}" href="/admin/learning">
-                    <i class="bi bi-cpu-fill"></i> AI Навчання
+                    <i class="bi bi-cpu-fill"></i> AI Learning
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if active_page == 'stats' %}active{% endif %}" href="/admin/stats">
-                    <i class="bi bi-graph-up-arrow"></i> Статистика
+                    <i class="bi bi-graph-up-arrow"></i> Statistics
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if active_page == 'alerts' %}active{% endif %}" href="/admin/alerts">
-                    <i class="bi bi-bell-fill"></i> Алерти
+                    <i class="bi bi-bell-fill"></i> Alerts
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if active_page == 'system' %}active{% endif %}" href="/admin/system">
-                    <i class="bi bi-gear-fill"></i> Система
+                    <i class="bi bi-gear-fill"></i> System
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if active_page == 'signal_logs' %}active{% endif %}" href="/admin/signal-logs">
-                    <i class="bi bi-journal-text"></i> Логи сигналів
+                    <i class="bi bi-journal-text"></i> Signal Logs
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if active_page == 'coins' %}active{% endif %}" href="/admin/coins">
-                    <i class="bi bi-coin"></i> Монети
+                    <i class="bi bi-coin"></i> Coins
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if active_page == 'wallets' %}active{% endif %}" href="/admin/wallets">
-                    <i class="bi bi-wallet2"></i> Гаманці
+                    <i class="bi bi-wallet2"></i> Wallets
                 </a>
             </li>
         </ul>
         <div class="sidebar-footer">
             <div class="d-flex justify-content-between align-items-center">
                 <span><i class="bi bi-person-circle"></i> {{ admin_user }}</span>
-                <a href="/admin/logout" class="text-danger text-decoration-none" title="Вийти"><i class="bi bi-box-arrow-right"></i></a>
+                <a href="/admin/logout" class="text-danger text-decoration-none" title="Logout"><i class="bi bi-box-arrow-right"></i></a>
             </div>
         </div>
     </nav>

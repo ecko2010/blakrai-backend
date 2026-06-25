@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Сигнали{% endblock %}
+{% block title %}Signals{% endblock %}
 
 {% block content %}
 <div class="page-header">
-  <h1><i class="bi bi-broadcast-pin text-blue"></i> Сигнали</h1>
+  <h1><i class="bi bi-broadcast-pin text-blue"></i> Signals</h1>
   <span class="page-meta">Знайдено: {{ total }} · Стор. {{ page }}/{{ total_pages }}</span>
 </div>
 
@@ -48,31 +48,31 @@
   <div class="card-body">
     <div class="row g-2">
       <div class="col-auto">
-        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('Видалити всі сигнали з цим статусом?')">
+        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('Видалити всі signals з цим statusом?')">
           <input type="hidden" name="status_filter" value="stopped">
           <button class="btn btn-sm btn-outline-danger">🛑 Stopped ({{ count_stopped }})</button>
         </form>
       </div>
       <div class="col-auto">
-        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('Видалити всі сигнали з цим статусом?')">
+        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('Видалити всі signals з цим statusом?')">
           <input type="hidden" name="status_filter" value="expired">
           <button class="btn btn-sm btn-outline-warning">⏰ Expired ({{ count_expired }})</button>
         </form>
       </div>
       <div class="col-auto">
-        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('Видалити всі сигнали з цим статусом?')">
+        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('Видалити всі signals з цим statusом?')">
           <input type="hidden" name="status_filter" value="closed">
           <button class="btn btn-sm btn-outline-secondary">📋 Closed ({{ count_closed }})</button>
         </form>
       </div>
       <div class="col-auto">
-        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('Видалити всі сигнали з цим статусом?')">
+        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('Видалити всі signals з цим statusом?')">
           <input type="hidden" name="status_filter" value="cancelled">
           <button class="btn btn-sm btn-outline-secondary">❌ Cancelled ({{ count_cancelled }})</button>
         </form>
       </div>
       <div class="col-auto">
-        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('⚠️ Видалити ВСІ закриті сигнали? Цю дію неможливо скасувати!')">
+        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('⚠️ Видалити ВСІ закриті signals? Цю дію неможливо скасувати!')">
           <input type="hidden" name="status_filter" value="all_closed">
           <button class="btn btn-sm btn-danger">🗑 Всі закриті ({{ count_stopped + count_expired + count_closed + count_cancelled }})</button>
         </form>
@@ -125,7 +125,7 @@
         </tr>
         {% endfor %}
         {% if not signals %}
-        <tr><td colspan="12" class="text-center text-muted py-4">Сигнали не знайдені</td></tr>
+        <tr><td colspan="12" class="text-center text-muted py-4">Signals не знайдені</td></tr>
         {% endif %}
       </tbody>
     </table>
