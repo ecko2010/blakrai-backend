@@ -4,7 +4,7 @@
 {% block content %}
 <div class="page-header">
   <h1><i class="bi bi-broadcast-pin text-blue"></i> Signals</h1>
-  <span class="page-meta">Знайдено: {{ total }} · Стор. {{ page }}/{{ total_pages }}</span>
+  <span class="page-meta">Found: {{ total }} · Page {{ page }}/{{ total_pages }}</span>
 </div>
 
 <!-- Filters -->
@@ -12,23 +12,23 @@
   <div class="card-body">
     <form class="row g-3 align-items-end" method="get" action="/admin/signals">
       <div class="col-md-3">
-        <label class="form-label small text-muted">Статус</label>
+        <label class="form-label small text-muted">Status</label>
         <select name="status" class="form-select form-select-sm">
-          <option value="">Всі</option>
+          <option value="">All</option>
           {% for s in statuses %}
           <option value="{{ s }}" {% if filter_status == s %}selected{% endif %}>{{ s }}</option>
           {% endfor %}
         </select>
       </div>
       <div class="col-md-3">
-        <label class="form-label small text-muted">Монета</label>
+        <label class="form-label small text-muted">Coin</label>
         <input type="text" name="coin" value="{{ filter_coin }}" placeholder="BTC, ETH..." class="form-control form-control-sm">
       </div>
       <div class="col-md-2">
-        <button type="submit" class="btn btn-sm btn-primary w-100">Фільтр</button>
+        <button type="submit" class="btn btn-sm btn-primary w-100">Filter</button>
       </div>
       <div class="col-md-2">
-        <a href="/admin/signals" class="btn btn-sm btn-outline-secondary w-100">Скинути</a>
+        <a href="/admin/signals" class="btn btn-sm btn-outline-secondary w-100">Reset</a>
       </div>
     </form>
   </div>
@@ -37,44 +37,44 @@
 <!-- Cleanup notice -->
 {% if cleaned is not none %}
 <div class="alert alert-success alert-dismissible fade show" role="alert">
-  ✅ Видалено <strong>{{ cleaned }}</strong> сигналів.
+  ✅ Deleted <strong>{{ cleaned }}</strong> signals.
   <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 </div>
 {% endif %}
 
 <!-- Cleanup -->
 <div class="card mb-4">
-  <div class="card-header"><i class="bi bi-trash"></i> Очистка сигналів</div>
+  <div class="card-header"><i class="bi bi-trash"></i> Signal clearing</div>
   <div class="card-body">
     <div class="row g-2">
       <div class="col-auto">
-        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('Видалити всі signals з цим statusом?')">
+        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('Delete all signals with this statusof?')">
           <input type="hidden" name="status_filter" value="stopped">
           <button class="btn btn-sm btn-outline-danger">🛑 Stopped ({{ count_stopped }})</button>
         </form>
       </div>
       <div class="col-auto">
-        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('Видалити всі signals з цим statusом?')">
+        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('Delete all signals with this statusof?')">
           <input type="hidden" name="status_filter" value="expired">
           <button class="btn btn-sm btn-outline-warning">⏰ Expired ({{ count_expired }})</button>
         </form>
       </div>
       <div class="col-auto">
-        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('Видалити всі signals з цим statusом?')">
+        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('Delete all signals with this statusof?')">
           <input type="hidden" name="status_filter" value="closed">
           <button class="btn btn-sm btn-outline-secondary">📋 Closed ({{ count_closed }})</button>
         </form>
       </div>
       <div class="col-auto">
-        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('Видалити всі signals з цим statusом?')">
+        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('Delete all signals with this statusof?')">
           <input type="hidden" name="status_filter" value="cancelled">
           <button class="btn btn-sm btn-outline-secondary">❌ Cancelled ({{ count_cancelled }})</button>
         </form>
       </div>
       <div class="col-auto">
-        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('⚠️ Видалити ВСІ закриті signals? Цю дію неможливо скасувати!')">
+        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('⚠️ Delete ALL closed signals? This action cannot be undone!')">
           <input type="hidden" name="status_filter" value="all_closed">
-          <button class="btn btn-sm btn-danger">🗑 All закриті ({{ count_stopped + count_expired + count_closed + count_cancelled }})</button>
+          <button class="btn btn-sm btn-danger">🗑 All closed ({{ count_stopped + count_expired + count_closed + count_cancelled }})</button>
         </form>
       </div>
     </div>
@@ -84,25 +84,25 @@
 <!-- Results -->
 <div class="card">
   <div class="card-header d-flex justify-content-between">
-    <span>Знайдено: {{ total }}</span>
-    <span>Стор. {{ page }} / {{ total_pages }}</span>
+    <span>Found: {{ total }}</span>
+    <span>Page {{ page }} / {{ total_pages }}</span>
   </div>
   <div class="table-responsive">
       <table class="table mb-0">
       <thead>
         <tr>
           <th>#</th>
-          <th>Монета</th>
-          <th>Напрям</th>
-          <th>Вхід</th>
+          <th>Coin</th>
+          <th>Direction</th>
+          <th>Login</th>
           <th>TP1/2/3</th>
           <th>SL</th>
-          <th>Статус</th>
+          <th>Status</th>
           <th>PnL</th>
-          <th>Біржа</th>
-          <th>Тір</th>
+          <th>Exchange</th>
+          <th>Tier</th>
           <th>Confidence</th>
-          <th>Дата</th>
+          <th>Date</th>
         </tr>
       </thead>
       <tbody>
@@ -125,7 +125,7 @@
         </tr>
         {% endfor %}
         {% if not signals %}
-        <tr><td colspan="12" class="text-center text-muted py-4">Signals не знайдені</td></tr>
+        <tr><td colspan="12" class="text-center text-muted py-4">Signals not found</td></tr>
         {% endif %}
       </tbody>
     </table>

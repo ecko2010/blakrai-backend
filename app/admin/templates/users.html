@@ -4,7 +4,7 @@
 {% block content %}
 <div class="page-header">
   <h1><i class="bi bi-people-fill text-blue"></i> Users</h1>
-  <span class="page-meta">{{ total }} загалом</span>
+  <span class="page-meta">{{ total }} total</span>
 </div>
 
 <!-- Filters -->
@@ -12,24 +12,24 @@
   <div class="card-body">
     <form class="row g-3 align-items-end" method="get" action="/admin/users">
       <div class="col-md-4">
-        <label class="form-label small text-muted">Пошук</label>
-        <input type="text" name="q" value="{{ filter_q }}" placeholder="Username, ім'я, Telegram ID..."
+        <label class="form-label small text-muted">Search</label>
+        <input type="text" name="q" value="{{ filter_q }}" placeholder="Username, name, Telegram ID..."
                class="form-control form-control-sm">
       </div>
       <div class="col-md-3">
-        <label class="form-label small text-muted">Тір</label>
+        <label class="form-label small text-muted">Tier</label>
         <select name="tier" class="form-select form-select-sm">
-          <option value="">Всі</option>
+          <option value="">All</option>
           {% for t in tiers %}
           <option value="{{ t }}" {% if filter_tier == t %}selected{% endif %}>{{ t }}</option>
           {% endfor %}
         </select>
       </div>
       <div class="col-md-2">
-        <button type="submit" class="btn btn-sm btn-primary w-100">Фільтр</button>
+        <button type="submit" class="btn btn-sm btn-primary w-100">Filter</button>
       </div>
       <div class="col-md-2">
-        <a href="/admin/users" class="btn btn-sm btn-outline-secondary w-100">Скинути</a>
+        <a href="/admin/users" class="btn btn-sm btn-outline-secondary w-100">Reset</a>
       </div>
     </form>
   </div>
@@ -38,8 +38,8 @@
 <!-- Users table -->
 <div class="card">
   <div class="card-header d-flex justify-content-between">
-    <span>Usersв: {{ total }}</span>
-    <span>Стор. {{ page }} / {{ total_pages }}</span>
+    <span>Usersin: {{ total }}</span>
+    <span>Page {{ page }} / {{ total_pages }}</span>
   </div>
   <div class="table-responsive">
       <table class="table mb-0">
@@ -48,12 +48,12 @@
           <th>ID</th>
           <th>Telegram ID</th>
           <th>Username</th>
-          <th>Ім'я</th>
-          <th>Тір</th>
-          <th>Мова</th>
-          <th>Бан</th>
-          <th>Зареєстровано</th>
-          <th>Дії</th>
+          <th>Name</th>
+          <th>Tier</th>
+          <th>Language</th>
+          <th>Ban</th>
+          <th>Registered</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -67,9 +67,9 @@
           <td>{{ u.language.value if u.language else '—' }}</td>
           <td>
             {% if u.is_banned %}
-            <span class="badge bg-danger">Бан</span>
+            <span class="badge bg-danger">Ban</span>
             {% else %}
-            <span class="badge bg-success">Ок</span>
+            <span class="badge bg-success">Ok</span>
             {% endif %}
           </td>
           <td class="small">{{ u.created_at.strftime('%d.%m.%Y') if u.created_at else '—' }}</td>
@@ -78,14 +78,14 @@
               <!-- Ban/Unban -->
               <form method="post" action="/admin/users/{{ u.id }}/ban" class="d-inline">
                 <button type="submit" class="btn btn-xs {% if u.is_banned %}btn-outline-success{% else %}btn-outline-danger{% endif %}"
-                        title="{% if u.is_banned %}Розбанити{% else %}Забанити{% endif %}"
-                        onclick="return confirm('{% if u.is_banned %}Розбанити{% else %}Забанити{% endif %} {{ u.username or u.telegram_id }}?')">
+                        title="{% if u.is_banned %}Unban{% else %}Ban{% endif %}"
+                        onclick="return confirm('{% if u.is_banned %}Unban{% else %}Ban{% endif %} {{ u.username or u.telegram_id }}?')">
                   <i class="bi {% if u.is_banned %}bi-unlock{% else %}bi-lock{% endif %}"></i>
                 </button>
               </form>
               <!-- Tier change -->
               <div class="dropdown d-inline">
-                <button class="btn btn-xs btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" title="Змінити тір">
+                <button class="btn btn-xs btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" title="Change tier">
                   <i class="bi bi-arrow-up-circle"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-dark">
@@ -104,7 +104,7 @@
         </tr>
         {% endfor %}
         {% if not users %}
-        <tr><td colspan="9" class="text-center text-muted py-4">Usersв не знайдено</td></tr>
+        <tr><td colspan="9" class="text-center text-muted py-4">Usersnot found in</td></tr>
         {% endif %}
       </tbody>
     </table>

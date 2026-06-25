@@ -64,35 +64,35 @@
 <div class="page-header">
   <div>
     <h1><i class="bi bi-journal-text"></i> Signal Logs</h1>
-    <div class="page-meta">Повний дамп сигналів для аналізу — скопіюй та працюй</div>
+    <div class="page-meta">Full dump of signals for analysis — copy and work</div>
   </div>
 </div>
 
 <!-- Controls -->
 <div class="log-controls mb-3">
-  <span class="text-muted" style="font-size:0.85rem;">Кількість:</span>
+  <span class="text-muted" style="font-size:0.85rem;">Amount:</span>
   <div class="btn-group">
     <a href="/admin/signal-logs?n=10" class="btn btn-sm btn-outline-secondary {% if n == 10 %}active{% endif %}">10</a>
     <a href="/admin/signal-logs?n=25" class="btn btn-sm btn-outline-secondary {% if n == 25 %}active{% endif %}">25</a>
     <a href="/admin/signal-logs?n=50" class="btn btn-sm btn-outline-secondary {% if n == 50 %}active{% endif %}">50</a>
     <a href="/admin/signal-logs?n=100" class="btn btn-sm btn-outline-secondary {% if n == 100 %}active{% endif %}">100</a>
   </div>
-  <span class="text-muted" style="font-size:0.85rem;">Фільтр:</span>
+  <span class="text-muted" style="font-size:0.85rem;">Filter:</span>
   <div class="btn-group">
-    <a href="/admin/signal-logs?n={{ n }}&f=all" class="btn btn-sm btn-outline-secondary {% if f == 'all' %}active{% endif %}">Всі</a>
-    <a href="/admin/signal-logs?n={{ n }}&f=closed" class="btn btn-sm btn-outline-secondary {% if f == 'closed' %}active{% endif %}">Закриті</a>
-    <a href="/admin/signal-logs?n={{ n }}&f=win" class="btn btn-sm btn-outline-secondary {% if f == 'win' %}active{% endif %}">Виграші</a>
-    <a href="/admin/signal-logs?n={{ n }}&f=loss" class="btn btn-sm btn-outline-secondary {% if f == 'loss' %}active{% endif %}">Програші</a>
-    <a href="/admin/signal-logs?n={{ n }}&f=active" class="btn btn-sm btn-outline-secondary {% if f == 'active' %}active{% endif %}">Активні</a>
+    <a href="/admin/signal-logs?n={{ n }}&f=all" class="btn btn-sm btn-outline-secondary {% if f == 'all' %}active{% endif %}">All</a>
+    <a href="/admin/signal-logs?n={{ n }}&f=closed" class="btn btn-sm btn-outline-secondary {% if f == 'closed' %}active{% endif %}">Closed</a>
+    <a href="/admin/signal-logs?n={{ n }}&f=win" class="btn btn-sm btn-outline-secondary {% if f == 'win' %}active{% endif %}">Wins</a>
+    <a href="/admin/signal-logs?n={{ n }}&f=loss" class="btn btn-sm btn-outline-secondary {% if f == 'loss' %}active{% endif %}">Losses</a>
+    <a href="/admin/signal-logs?n={{ n }}&f=active" class="btn btn-sm btn-outline-secondary {% if f == 'active' %}active{% endif %}">Active</a>
   </div>
 </div>
 
 <!-- Summary -->
 <div class="summary-box mb-3 d-flex flex-wrap gap-3">
-  <span class="stat-pill">📊 Всього: <strong>{{ total }}</strong></span>
+  <span class="stat-pill">📊 Total: <strong>{{ total }}</strong></span>
   {% if wins is defined %}
-  <span class="stat-pill" style="color:#00e676">✅ Перемог: <strong>{{ wins }}</strong></span>
-  <span class="stat-pill" style="color:#ff5252">❌ Програшів: <strong>{{ losses }}</strong></span>
+  <span class="stat-pill" style="color:#00e676">✅ Wins: <strong>{{ wins }}</strong></span>
+  <span class="stat-pill" style="color:#ff5252">❌ Losses: <strong>{{ losses }}</strong></span>
   <span class="stat-pill">📈 Win Rate: <strong>{{ "%.1f"|format(win_rate) }}%</strong></span>
   <span class="stat-pill">💰 Avg PnL: <strong>{{ "%+.2f"|format(avg_pnl) }}%</strong></span>
   <span class="stat-pill">🏦 Total PnL: <strong>{{ "%+.2f"|format(total_pnl) }}%</strong></span>
@@ -101,7 +101,7 @@
 
 <!-- Log output -->
 <div class="log-output" id="logOutput">
-  <button class="copy-btn" id="copyBtn" onclick="copyLogs()">📋 Копіювати</button>
+  <button class="copy-btn" id="copyBtn" onclick="copyLogs()">📋 Copy</button>
 <span id="logText">{{ log_text }}</span>
 </div>
 
@@ -113,9 +113,9 @@ function copyLogs() {
   const text = document.getElementById('logText').textContent;
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.getElementById('copyBtn');
-    btn.textContent = '✅ Скопійовано!';
+    btn.textContent = '✅ Copied!';
     btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = '📋 Копіювати'; btn.classList.remove('copied'); }, 2000);
+    setTimeout(() => { btn.textContent = '📋 Copy'; btn.classList.remove('copied'); }, 2000);
   });
 }
 </script>

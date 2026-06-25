@@ -4,7 +4,7 @@
 {% block content %}
 <div class="page-header">
   <h1><i class="bi bi-coin text-yellow"></i> Coins</h1>
-  <span class="page-meta">{{ total }} монет у базі</span>
+  <span class="page-meta">{{ total }} coins in the database</span>
 </div>
 
 <!-- Filters -->
@@ -12,25 +12,25 @@
   <div class="card-body">
     <form class="row g-3 align-items-end" method="get" action="/admin/coins">
       <div class="col-md-4">
-        <label class="form-label small text-muted">Пошук</label>
-        <input type="text" name="q" value="{{ filter_q }}" placeholder="Символ або назва..."
+        <label class="form-label small text-muted">Search</label>
+        <input type="text" name="q" value="{{ filter_q }}" placeholder="Symbol or name..."
                class="form-control form-control-sm">
       </div>
       <div class="col-md-3">
-        <label class="form-label small text-muted">Статус даних</label>
+        <label class="form-label small text-muted">Status data</label>
         <select name="status" class="form-select form-select-sm">
-          <option value="">Всі</option>
-          <option value="no_logo" {% if filter_status == 'no_logo' %}selected{% endif %}>Без логотипу</option>
-          <option value="no_name" {% if filter_status == 'no_name' %}selected{% endif %}>Без назви</option>
-          <option value="no_coingecko" {% if filter_status == 'no_coingecko' %}selected{% endif %}>Без CoinGecko ID</option>
-          <option value="complete" {% if filter_status == 'complete' %}selected{% endif %}>Повні дані</option>
+          <option value="">All</option>
+          <option value="no_logo" {% if filter_status == 'no_logo' %}selected{% endif %}>Without logo</option>
+          <option value="no_name" {% if filter_status == 'no_name' %}selected{% endif %}>Untitled</option>
+          <option value="no_coingecko" {% if filter_status == 'no_coingecko' %}selected{% endif %}>Without CoinGecko ID</option>
+          <option value="complete" {% if filter_status == 'complete' %}selected{% endif %}>Full data</option>
         </select>
       </div>
       <div class="col-md-2">
-        <button type="submit" class="btn btn-sm btn-primary w-100">Фільтр</button>
+        <button type="submit" class="btn btn-sm btn-primary w-100">Filter</button>
       </div>
       <div class="col-md-2">
-        <a href="/admin/coins" class="btn btn-sm btn-outline-secondary w-100">Скинути</a>
+        <a href="/admin/coins" class="btn btn-sm btn-outline-secondary w-100">Reset</a>
       </div>
     </form>
   </div>
@@ -41,28 +41,28 @@
   <div class="col-md-3">
     <div class="stat-card">
       <div class="stat-icon text-blue"><i class="bi bi-coin"></i></div>
-      <div class="stat-label">Всього монет</div>
+      <div class="stat-label">Total coins</div>
       <div class="stat-value">{{ total }}</div>
     </div>
   </div>
   <div class="col-md-3">
     <div class="stat-card">
       <div class="stat-icon text-green"><i class="bi bi-check-circle"></i></div>
-      <div class="stat-label">З логотипом</div>
+      <div class="stat-label">With logo</div>
       <div class="stat-value">{{ with_logo }}</div>
     </div>
   </div>
   <div class="col-md-3">
     <div class="stat-card">
       <div class="stat-icon text-red"><i class="bi bi-exclamation-circle"></i></div>
-      <div class="stat-label">Без логотипу</div>
+      <div class="stat-label">Without logo</div>
       <div class="stat-value">{{ without_logo }}</div>
     </div>
   </div>
   <div class="col-md-3">
     <div class="stat-card">
       <div class="stat-icon text-purple"><i class="bi bi-link-45deg"></i></div>
-      <div class="stat-label">Без CoinGecko</div>
+      <div class="stat-label">Without CoinGecko</div>
       <div class="stat-value">{{ without_cg }}</div>
     </div>
   </div>
@@ -71,22 +71,22 @@
 <!-- Coins table -->
 <div class="card">
   <div class="card-header d-flex justify-content-between">
-    <span>Монет: {{ total }}</span>
-    <span>Стор. {{ page }} / {{ total_pages }}</span>
+    <span>Coins: {{ total }}</span>
+    <span>Page {{ page }} / {{ total_pages }}</span>
   </div>
   <div class="table-responsive">
     <table class="table mb-0">
       <thead>
         <tr>
           <th style="width:40px"></th>
-          <th>Символ</th>
-          <th>Назва</th>
+          <th>Symbol</th>
+          <th>Name</th>
           <th>CoinGecko ID</th>
           <th>Rank</th>
           <th>Market Cap</th>
-          <th>Біржі</th>
-          <th>Оновлено</th>
-          <th style="width:80px">Дії</th>
+          <th>Exchanges</th>
+          <th>Updated</th>
+          <th style="width:80px">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -107,7 +107,7 @@
             {% if c.coingecko_id %}
               <span class="text-muted small">{{ c.coingecko_id }}</span>
             {% else %}
-              <span class="badge bg-warning bg-opacity-25 text-warning" style="font-size:0.65rem">відсутній</span>
+              <span class="badge bg-warning bg-opacity-25 text-warning" style="font-size:0.65rem">missing</span>
             {% endif %}
           </td>
           <td>{{ c.market_cap_rank or '—' }}</td>
@@ -120,7 +120,7 @@
           </td>
           <td>
             {% if c.exchanges_available %}
-              <span class="text-muted small">{{ c.exchanges_available | length }} бірж</span>
+              <span class="text-muted small">{{ c.exchanges_available | length }} exchanges</span>
             {% else %}
               —
             {% endif %}
@@ -179,14 +179,14 @@
             {% if c.logo_thumb_url or c.logo_url %}
               <img src="{{ c.logo_thumb_url or c.logo_url }}" width="24" height="24" style="border-radius:50%;" alt="">
             {% endif %}
-            Редагувати {{ c.symbol.replace('USDT','') }}
+            Edit {{ c.symbol.replace('USDT','') }}
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
           <div class="row g-3">
             <div class="col-md-6">
-              <label class="form-label small text-muted">Назва</label>
+              <label class="form-label small text-muted">Name</label>
               <input type="text" name="name" value="{{ c.name or '' }}" class="form-control form-control-sm">
             </div>
             <div class="col-md-6">
@@ -195,22 +195,22 @@
                      placeholder="bitcoin, ethereum...">
             </div>
             <div class="col-md-6">
-              <label class="form-label small text-muted">Логотип URL (повний)</label>
+              <label class="form-label small text-muted">Logo URL (full)</label>
               <input type="url" name="logo_url" value="{{ c.logo_url or '' }}" class="form-control form-control-sm"
                      placeholder="https://...png">
             </div>
             <div class="col-md-6">
-              <label class="form-label small text-muted">Логотип URL (thumb)</label>
+              <label class="form-label small text-muted">Logo URL (thumb)</label>
               <input type="url" name="logo_thumb_url" value="{{ c.logo_thumb_url or '' }}" class="form-control form-control-sm"
                      placeholder="https://...thumb.png">
             </div>
             <div class="col-md-12">
-              <label class="form-label small text-muted">Домашня сторінка</label>
+              <label class="form-label small text-muted">Homepage</label>
               <input type="url" name="homepage_url" value="{{ c.homepage_url or '' }}" class="form-control form-control-sm"
                      placeholder="https://bitcoin.org">
             </div>
             <div class="col-md-12">
-              <label class="form-label small text-muted">Опис (англійська)</label>
+              <label class="form-label small text-muted">Description (English)</label>
               <textarea name="description_en" rows="3" class="form-control form-control-sm"
                         placeholder="Short description...">{{ c.description_en or '' }}</textarea>
             </div>
@@ -255,8 +255,8 @@
           </div>
         </div>
         <div class="modal-footer" style="border-color:var(--border-color);">
-          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Скасувати</button>
-          <button type="submit" class="btn btn-sm btn-primary">Зберегти</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-sm btn-primary">Save</button>
         </div>
       </form>
     </div>

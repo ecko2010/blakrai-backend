@@ -14,7 +14,7 @@
         <span style="width:12px;height:12px;border-radius:50%;display:inline-block;" class="{% if db_ok %}bg-success{% else %}bg-danger{% endif %}"></span>
         <span>PostgreSQL</span>
       </div>
-      <small class="text-muted mt-1 d-block">{{ db_stats|length }} таблиць</small>
+      <small class="text-muted mt-1 d-block">{{ db_stats|length }} tables</small>
     </div>
   </div>
   <div class="col-md-3 col-6">
@@ -24,7 +24,7 @@
         <span>Redis</span>
       </div>
       {% if redis_info %}
-      <small class="text-muted mt-1 d-block">{{ redis_info.used_memory }} · {{ redis_info.keys }} ключів</small>
+      <small class="text-muted mt-1 d-block">{{ redis_info.used_memory }} · {{ redis_info.keys }} keys</small>
       {% endif %}
     </div>
   </div>
@@ -34,12 +34,12 @@
         <span style="width:12px;height:12px;border-radius:50%;display:inline-block;" class="{% if scheduler_running %}bg-success{% else %}bg-danger{% endif %}"></span>
         <span>Scheduler</span>
       </div>
-      <small class="text-muted mt-1 d-block">{{ jobs|length }} задач</small>
+      <small class="text-muted mt-1 d-block">{{ jobs|length }} tasks</small>
     </div>
   </div>
   <div class="col-md-3 col-6">
     <div class="card p-3">
-      <div class="text-muted small">Останній скан</div>
+      <div class="text-muted small">Last scan</div>
       <strong>{{ last_scan if last_scan else '—' }}</strong>
     </div>
   </div>
@@ -49,11 +49,11 @@
   <!-- DB table sizes -->
   <div class="col-md-6">
     <div class="card">
-      <div class="card-header"><i class="bi bi-database"></i> Таблиці БД</div>
+      <div class="card-header"><i class="bi bi-database"></i> Database Tables</div>
       <div class="table-responsive">
         <table class="table table-sm mb-0">
           <thead>
-            <tr><th>Таблиця</th><th>Рядків</th></tr>
+            <tr><th>Table</th><th>Rows</th></tr>
           </thead>
           <tbody>
             {% for name, count in db_stats.items()|sort(attribute='1', reverse=True) %}
@@ -71,7 +71,7 @@
   <!-- Env config -->
   <div class="col-md-6">
     <div class="card mb-3">
-      <div class="card-header"><i class="bi bi-sliders"></i> Конфігурація</div>
+      <div class="card-header"><i class="bi bi-sliders"></i> Configuration</div>
       <div class="table-responsive">
         <table class="table table-sm mb-0">
           <tbody>
@@ -100,9 +100,9 @@
       <div class="table-responsive">
         <table class="table table-sm mb-0">
           <tbody>
-            <tr><td class="text-muted">Пам'ять</td><td>{{ redis_info.used_memory }}</td></tr>
-            <tr><td class="text-muted">Клієнтів</td><td>{{ redis_info.connected_clients }}</td></tr>
-            <tr><td class="text-muted">Ключів</td><td>{{ redis_info.keys }}</td></tr>
+            <tr><td class="text-muted">Memory</td><td>{{ redis_info.used_memory }}</td></tr>
+            <tr><td class="text-muted">Clients</td><td>{{ redis_info.connected_clients }}</td></tr>
+            <tr><td class="text-muted">Keys</td><td>{{ redis_info.keys }}</td></tr>
           </tbody>
         </table>
       </div>
@@ -114,11 +114,11 @@
 <!-- Scheduler jobs -->
 {% if jobs %}
 <div class="card mb-4">
-  <div class="card-header"><i class="bi bi-clock"></i> Задачі планувальника</div>
+  <div class="card-header"><i class="bi bi-clock"></i> Scheduler tasks</div>
   <div class="table-responsive">
     <table class="table table-sm mb-0">
       <thead>
-        <tr><th>ID</th><th>Тригер</th><th>Наступний запуск</th></tr>
+        <tr><th>ID</th><th>Trigger</th><th>Next launch</th></tr>
       </thead>
       <tbody>
         {% for j in jobs %}
@@ -137,11 +137,11 @@
 <!-- Exchange connectivity -->
 {% if exchange_status %}
 <div class="card">
-  <div class="card-header"><i class="bi bi-globe"></i> Біржі</div>
+  <div class="card-header"><i class="bi bi-globe"></i> Exchanges</div>
   <div class="table-responsive">
     <table class="table table-sm mb-0">
       <thead>
-        <tr><th>Біржа</th><th>Статус</th><th>BTC Ціна</th></tr>
+        <tr><th>Exchange</th><th>Status</th><th>BTC Price</th></tr>
       </thead>
       <tbody>
         {% for name, info in exchange_status.items() %}

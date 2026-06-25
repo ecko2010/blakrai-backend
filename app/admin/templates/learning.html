@@ -10,26 +10,26 @@
 <div class="row g-3 mb-4">
   <div class="col-md-2 col-6">
     <div class="stat-card text-center">
-      <div class="stat-label">Всього фідбеків</div>
+      <div class="stat-label">Total feedbacks</div>
       <div class="stat-value" style="font-size:1.3rem">{{ total_fb }}</div>
     </div>
   </div>
   <div class="col-md-2 col-6">
     <div class="stat-card text-center">
-      <div class="stat-label">Застосовано</div>
+      <div class="stat-label">Applied</div>
       <div class="stat-value text-green" style="font-size:1.3rem">{{ applied_fb }}</div>
     </div>
   </div>
   <div class="col-md-2 col-6">
     <div class="stat-card text-center">
-      <div class="stat-label">Очікують</div>
+      <div class="stat-label">Pending</div>
       <div class="stat-value text-yellow" style="font-size:1.3rem">{{ unapplied_fb }}</div>
     </div>
   </div>
   {% if health %}
   <div class="col-md-2 col-6">
     <div class="stat-card text-center">
-      <div class="stat-label">Вінрейт (7д)</div>
+      <div class="stat-label">Win rate (7d)</div>
       <div class="stat-value {% if health.get('win_rate', 0) >= 60 %}text-green{% elif health.get('win_rate', 0) < 45 %}text-red{% endif %}" style="font-size:1.3rem">
         {{ "%.1f"|format(health.get('win_rate', 0)) }}%
       </div>
@@ -37,7 +37,7 @@
   </div>
   <div class="col-md-2 col-6">
     <div class="stat-card text-center">
-      <div class="stat-label">Сер. PnL (7д)</div>
+      <div class="stat-label">Sir. PnL (7d)</div>
       <div class="stat-value {% if health.get('avg_pnl', 0) > 0 %}text-green{% elif health.get('avg_pnl', 0) < 0 %}text-red{% endif %}" style="font-size:1.3rem">
         {{ "%.2f"|format(health.get('avg_pnl', 0)) }}%
       </div>
@@ -56,13 +56,13 @@
 <div class="card mb-4">
   <div class="card-body d-flex justify-content-between align-items-center">
     <div>
-      <h6 class="mb-1"><i class="bi bi-lightning-charge text-yellow"></i> Ручний цикл навчання</h6>
-      <small class="text-muted">Запустити apply_accumulated_corrections() — проаналізує {{ unapplied_fb }} незастосованих фідбеків</small>
+      <h6 class="mb-1"><i class="bi bi-lightning-charge text-yellow"></i> Manual training cycle</h6>
+      <small class="text-muted">Launch apply_accumulated_corrections() — will analyze {{ unapplied_fb }} unused feedbacks</small>
     </div>
     <form method="post" action="/admin/learning/run-cycle">
       <button type="submit" class="btn btn-warning btn-sm"
-              onclick="return confirm('Запустити цикл навчання AI?')">
-        <i class="bi bi-play-fill"></i> Запустити
+              onclick="return confirm('Start training cycle AI?')">
+        <i class="bi bi-play-fill"></i> Launch
       </button>
     </form>
   </div>
@@ -71,7 +71,7 @@
 <!-- Feedback type breakdown -->
 {% if fb_types %}
 <div class="card mb-4">
-  <div class="card-header"><i class="bi bi-pie-chart"></i> Типи фідбеків</div>
+  <div class="card-header"><i class="bi bi-pie-chart"></i> Typeand feedbacks</div>
   <div class="card-body">
     <div class="row g-2">
       {% for fb_type, count in fb_types.items() %}
@@ -88,16 +88,16 @@
   <!-- Recent feedbacks -->
   <div class="col-lg-7">
     <div class="card">
-      <div class="card-header"><i class="bi bi-chat-dots"></i> Recent AI фідбеки</div>
+      <div class="card-header"><i class="bi bi-chat-dots"></i> Recent AI feedbacks</div>
       <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
         <table class="table table-sm mb-0">
           <thead>
             <tr>
               <th>Signal</th>
-              <th>Тип</th>
-              <th>Корекція</th>
-              <th>Засто.</th>
-              <th>Дата</th>
+              <th>Type</th>
+              <th>Correction</th>
+              <th>Used.</th>
+              <th>Date</th>
             </tr>
           </thead>
           <tbody>
@@ -133,7 +133,7 @@
     <!-- System adjustments -->
     {% if adjustments %}
     <div class="card mb-3">
-      <div class="card-header"><i class="bi bi-gear"></i> Системні корекції</div>
+      <div class="card-header"><i class="bi bi-gear"></i> System corrections</div>
       <div class="card-body p-2" style="max-height: 250px; overflow-y: auto;">
         {% for adj in adjustments %}
         <div class="border-bottom border-secondary py-2 px-2">
@@ -154,7 +154,7 @@
 
     <!-- Lessons learned -->
     <div class="card">
-      <div class="card-header"><i class="bi bi-lightbulb"></i> Уроки AI</div>
+      <div class="card-header"><i class="bi bi-lightbulb"></i> Lessons AI</div>
       <div class="card-body p-2" style="max-height: 350px; overflow-y: auto;">
         {% for lesson in lessons %}
         <div class="border-bottom border-secondary py-2 px-2">
@@ -166,7 +166,7 @@
         </div>
         {% endfor %}
         {% if not lessons %}
-        <div class="text-center text-muted py-3">Уроків ще немає</div>
+        <div class="text-center text-muted py-3">No lessons yet</div>
         {% endif %}
       </div>
     </div>

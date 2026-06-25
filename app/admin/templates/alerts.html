@@ -10,25 +10,25 @@
 <div class="row g-3 mb-4">
   <div class="col-md-3 col-6">
     <div class="stat-card text-center">
-      <div class="stat-label">Всього алертів</div>
+      <div class="stat-label">Total alerts</div>
       <div class="stat-value" style="font-size:1.3rem">{{ total_alerts }}</div>
     </div>
   </div>
   <div class="col-md-3 col-6">
     <div class="stat-card text-center">
-      <div class="stat-label">Активних</div>
+      <div class="stat-label">Active</div>
       <div class="stat-value text-green" style="font-size:1.3rem">{{ active_alerts }}</div>
     </div>
   </div>
   <div class="col-md-3 col-6">
     <div class="stat-card text-center">
-      <div class="stat-label">Спрацювань</div>
+      <div class="stat-label">Triggers</div>
       <div class="stat-value" style="font-size:1.3rem">{{ total_triggers }}</div>
     </div>
   </div>
   <div class="col-md-3 col-6">
     <div class="stat-card text-center">
-      <div class="stat-label">Типів алертів</div>
+      <div class="stat-label">Typeof alerts</div>
       <div class="stat-value" style="font-size:1.3rem">{{ type_counts|length }}</div>
     </div>
   </div>
@@ -37,7 +37,7 @@
 <!-- Type breakdown -->
 {% if type_counts %}
 <div class="card mb-4">
-  <div class="card-header"><i class="bi bi-pie-chart"></i> По типах</div>
+  <div class="card-header"><i class="bi bi-pie-chart"></i> By types</div>
   <div class="card-body">
     <div class="row g-2">
       {% for atype, count in type_counts.items() %}
@@ -54,17 +54,17 @@
   <!-- Active alerts -->
   <div class="col-lg-6">
     <div class="card">
-      <div class="card-header"><i class="bi bi-bell"></i> Alerts usersв</div>
+      <div class="card-header"><i class="bi bi-bell"></i> Alerts usersin</div>
       <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
         <table class="table table-sm mb-0">
           <thead>
             <tr>
               <th>User</th>
-              <th>Тип</th>
-              <th>Монета</th>
-              <th>Параметри</th>
-              <th>Акт.</th>
-              <th>Створено</th>
+              <th>Type</th>
+              <th>Coin</th>
+              <th>Parameters</th>
+              <th>Act.</th>
+              <th>Created</th>
             </tr>
           </thead>
           <tbody>
@@ -85,7 +85,7 @@
             </tr>
             {% endfor %}
             {% if not alerts %}
-            <tr><td colspan="6" class="text-center text-muted py-3">Алертів немає</td></tr>
+            <tr><td colspan="6" class="text-center text-muted py-3">No alerts</td></tr>
             {% endif %}
           </tbody>
         </table>
@@ -96,15 +96,15 @@
   <!-- Trigger logs -->
   <div class="col-lg-6">
     <div class="card">
-      <div class="card-header"><i class="bi bi-journal-text"></i> Журнал спрацювань</div>
+      <div class="card-header"><i class="bi bi-journal-text"></i> Trigger log</div>
       <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
         <table class="table table-sm mb-0">
           <thead>
             <tr>
               <th>Alert</th>
               <th>User</th>
-              <th>Повідомл.</th>
-              <th>Дата</th>
+              <th>Notification.</th>
+              <th>Date</th>
             </tr>
           </thead>
           <tbody>
@@ -119,7 +119,7 @@
             </tr>
             {% endfor %}
             {% if not logs %}
-            <tr><td colspan="4" class="text-center text-muted py-3">Спрацювань немає</td></tr>
+            <tr><td colspan="4" class="text-center text-muted py-3">No triggers</td></tr>
             {% endif %}
           </tbody>
         </table>

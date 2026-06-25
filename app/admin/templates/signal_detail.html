@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Сигнал #{{ signal.id }}{% endblock %}
+{% block title %}Signal #{{ signal.id }}{% endblock %}
 
 {% block content %}
 <div class="page-header">
@@ -7,27 +7,27 @@
     <h1>
       {{ signal.coin_symbol }} {{ signal.direction.value|direction_badge }} {{ signal.status.value|status_badge }}
     </h1>
-    <div class="page-meta">Сигнал #{{ signal.id }} · {{ signal.exchange }} · {{ signal.timeframe }}</div>
+    <div class="page-meta">Signal #{{ signal.id }} · {{ signal.exchange }} · {{ signal.timeframe }}</div>
   </div>
-  <a href="/admin/signals" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left"></i> Назад</a>
+  <a href="/admin/signals" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
 </div>
 
 <div class="row g-3 mb-4">
   <!-- Details card -->
   <div class="col-md-6">
     <div class="card p-3">
-      <h6 class="text-muted mb-3">Деталі</h6>
+      <h6 class="text-muted mb-3">Details</h6>
       <table class="table table-sm mb-0">
         <tr><td class="text-muted w-50">ID</td><td>#{{ signal.id }}</td></tr>
-        <tr><td class="text-muted">Монета</td><td><strong>{{ signal.coin_symbol }}</strong></td></tr>
-        <tr><td class="text-muted">Біржа</td><td>{{ signal.exchange }}</td></tr>
-        <tr><td class="text-muted">Напрям</td><td>{{ signal.direction.value }}</td></tr>
-        <tr><td class="text-muted">Тір</td><td>{{ signal.min_tier.value if signal.min_tier else 'FREE' }}</td></tr>
+        <tr><td class="text-muted">Coin</td><td><strong>{{ signal.coin_symbol }}</strong></td></tr>
+        <tr><td class="text-muted">Exchange</td><td>{{ signal.exchange }}</td></tr>
+        <tr><td class="text-muted">Direction</td><td>{{ signal.direction.value }}</td></tr>
+        <tr><td class="text-muted">Tier</td><td>{{ signal.min_tier.value if signal.min_tier else 'FREE' }}</td></tr>
         <tr><td class="text-muted">Confidence</td><td>{{ "%.1f"|format(signal.confidence_score) if signal.confidence_score else '—' }}%</td></tr>
-        <tr><td class="text-muted">Створено</td><td>{{ signal.created_at.strftime('%d.%m.%Y %H:%M:%S UTC') if signal.created_at else '—' }}</td></tr>
+        <tr><td class="text-muted">Created</td><td>{{ signal.created_at.strftime('%d.%m.%Y %H:%M:%S UTC') if signal.created_at else '—' }}</td></tr>
         <tr><td class="text-muted">Closed</td><td>{{ signal.closed_at.strftime('%d.%m.%Y %H:%M:%S UTC') if signal.closed_at else '—' }}</td></tr>
         {% if signal.ai_reasoning %}
-        <tr><td class="text-muted">AI аналіз</td><td class="small">{{ signal.ai_reasoning }}</td></tr>
+        <tr><td class="text-muted">AI analysis</td><td class="small">{{ signal.ai_reasoning }}</td></tr>
         {% endif %}
       </table>
     </div>
@@ -36,7 +36,7 @@
   <!-- Price card -->
   <div class="col-md-6">
     <div class="card p-3">
-      <h6 class="text-muted mb-3">Ціни</h6>
+      <h6 class="text-muted mb-3">Prices</h6>
       <table class="table table-sm mb-0">
         <tr><td class="text-muted w-50">Entry</td><td>{{ signal.entry_price|fmt_price }}</td></tr>
         <tr><td class="text-muted">TP1</td><td>{{ signal.tp1|fmt_price }}</td></tr>
@@ -52,8 +52,8 @@
       {% if signal.status.value in ['active', 'tp1_hit', 'tp2_hit'] %}
       <form method="post" action="/admin/signals/{{ signal.id }}/cancel" class="mt-3">
         <button type="submit" class="btn btn-sm btn-outline-danger w-100"
-                onclick="return confirm('Скасувати сигнал #{{ signal.id }}?')">
-          <i class="bi bi-x-circle"></i> Скасувати сигнал
+                onclick="return confirm('Cancel signal #{{ signal.id }}?')">
+          <i class="bi bi-x-circle"></i> Cancel signal
         </button>
       </form>
       {% endif %}
@@ -67,10 +67,10 @@
   {% if signal.factors.regime %}
   <div class="col-md-6">
     <div class="card p-3">
-      <h6 class="text-muted mb-3"><i class="bi bi-diagram-3"></i> Ринковий режим</h6>
+      <h6 class="text-muted mb-3"><i class="bi bi-diagram-3"></i> Market mode</h6>
       <table class="table table-sm mb-0">
         <tr>
-          <td class="text-muted w-50">Режим</td>
+          <td class="text-muted w-50">Mode</td>
           <td>
             {% set regime_type = signal.factors.regime.type %}
             {% if regime_type == 'trending_bull' %}
@@ -86,9 +86,9 @@
             {% endif %}
           </td>
         </tr>
-        <tr><td class="text-muted">Сила</td><td>{{ "%.0f"|format((signal.factors.regime.strength or 0) * 100) }}%</td></tr>
+        <tr><td class="text-muted">Strength</td><td>{{ "%.0f"|format((signal.factors.regime.strength or 0) * 100) }}%</td></tr>
         {% if signal.factors.regime.multipliers %}
-        <tr><td class="text-muted">Мультиплікатори</td>
+        <tr><td class="text-muted">Multipliers</td>
           <td class="small">
             SL: {{ signal.factors.regime.multipliers.sl }}× ·
             TP1: {{ signal.factors.regime.multipliers.tp1 }}× ·
@@ -126,16 +126,16 @@
 <!-- Updates log -->
 <div class="card">
   <div class="card-header">
-    <i class="bi bi-clock-history"></i> Оновлення ({{ updates|length }})
+    <i class="bi bi-clock-history"></i> Updates ({{ updates|length }})
   </div>
   <div class="table-responsive">
     <table class="table table-sm mb-0">
       <thead>
         <tr>
-          <th>Тип</th>
-          <th>Ціна</th>
-          <th>Деталі</th>
-          <th>Дата</th>
+          <th>Type</th>
+          <th>Price</th>
+          <th>Details</th>
+          <th>Date</th>
         </tr>
       </thead>
       <tbody>
@@ -148,7 +148,7 @@
         </tr>
         {% endfor %}
         {% if not updates %}
-        <tr><td colspan="4" class="text-center text-muted py-3">Оновлень немає</td></tr>
+        <tr><td colspan="4" class="text-center text-muted py-3">No updates</td></tr>
         {% endif %}
       </tbody>
     </table>

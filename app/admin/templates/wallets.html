@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="bi bi-wallet2"></i> Трекінг walletsв</h2>
+    <h2><i class="bi bi-wallet2"></i> Tracking walletsin</h2>
 </div>
 
 <!-- Stats Row -->
@@ -11,25 +11,25 @@
     <div class="col-md-3">
         <div class="stat-card">
             <div class="stat-number">{{ total_wallets }}</div>
-            <div class="stat-label">Всього walletsв</div>
+            <div class="stat-label">Total walletsin</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="stat-card">
             <div class="stat-number">{{ active_wallets }}</div>
-            <div class="stat-label">Активних</div>
+            <div class="stat-label">Active</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="stat-card">
             <div class="stat-number">${{ "%.2f"|format(total_value) }}</div>
-            <div class="stat-label">Загальна вартість</div>
+            <div class="stat-label">Total cost</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="stat-card">
             <div class="stat-number">{{ unique_users }}</div>
-            <div class="stat-label">Usersв</div>
+            <div class="stat-label">Usersin</div>
         </div>
     </div>
 </div>
@@ -47,11 +47,11 @@
 <form class="row g-2 mb-4" method="get">
     <div class="col-md-3">
         <input type="text" name="q" class="form-control form-control-sm bg-dark text-light border-secondary"
-               placeholder="Пошук (адреса, юзер)" value="{{ filter_q }}">
+               placeholder="Search (address, user)" value="{{ filter_q }}">
     </div>
     <div class="col-md-2">
         <select name="chain" class="form-select form-select-sm bg-dark text-light border-secondary">
-            <option value="">All мережі</option>
+            <option value="">All network</option>
             <option value="ethereum" {{ 'selected' if filter_chain == 'ethereum' }}>Ethereum</option>
             <option value="bsc" {{ 'selected' if filter_chain == 'bsc' }}>BSC</option>
             <option value="arbitrum" {{ 'selected' if filter_chain == 'arbitrum' }}>Arbitrum</option>
@@ -62,11 +62,11 @@
         </select>
     </div>
     <div class="col-auto">
-        <button class="btn btn-sm btn-primary" type="submit"><i class="bi bi-search"></i> Фільтр</button>
+        <button class="btn btn-sm btn-primary" type="submit"><i class="bi bi-search"></i> Filter</button>
     </div>
     {% if filter_q or filter_chain %}
     <div class="col-auto">
-        <a href="/admin/wallets" class="btn btn-sm btn-outline-secondary">Скинути</a>
+        <a href="/admin/wallets" class="btn btn-sm btn-outline-secondary">Reset</a>
     </div>
     {% endif %}
 </form>
@@ -77,14 +77,14 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Користувач</th>
-                <th>Мережа</th>
-                <th>Адреса</th>
-                <th>Назва</th>
-                <th class="text-end">Вартість</th>
-                <th class="text-end">Токенів</th>
-                <th>Останнє скан.</th>
-                <th>Статус</th>
+                <th>User</th>
+                <th>Network</th>
+                <th>Address</th>
+                <th>Name</th>
+                <th class="text-end">Cost</th>
+                <th class="text-end">Tokens</th>
+                <th>Last scan.</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
