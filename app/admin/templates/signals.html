@@ -74,7 +74,7 @@
       <div class="col-auto">
         <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('⚠️ Видалити ВСІ закриті signals? Цю дію неможливо скасувати!')">
           <input type="hidden" name="status_filter" value="all_closed">
-          <button class="btn btn-sm btn-danger">🗑 Всі закриті ({{ count_stopped + count_expired + count_closed + count_cancelled }})</button>
+          <button class="btn btn-sm btn-danger">🗑 All закриті ({{ count_stopped + count_expired + count_closed + count_cancelled }})</button>
         </form>
       </div>
     </div>

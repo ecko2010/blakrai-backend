@@ -25,7 +25,7 @@
         <tr><td class="text-muted">Тір</td><td>{{ signal.min_tier.value if signal.min_tier else 'FREE' }}</td></tr>
         <tr><td class="text-muted">Confidence</td><td>{{ "%.1f"|format(signal.confidence_score) if signal.confidence_score else '—' }}%</td></tr>
         <tr><td class="text-muted">Створено</td><td>{{ signal.created_at.strftime('%d.%m.%Y %H:%M:%S UTC') if signal.created_at else '—' }}</td></tr>
-        <tr><td class="text-muted">Закрито</td><td>{{ signal.closed_at.strftime('%d.%m.%Y %H:%M:%S UTC') if signal.closed_at else '—' }}</td></tr>
+        <tr><td class="text-muted">Closed</td><td>{{ signal.closed_at.strftime('%d.%m.%Y %H:%M:%S UTC') if signal.closed_at else '—' }}</td></tr>
         {% if signal.ai_reasoning %}
         <tr><td class="text-muted">AI аналіз</td><td class="small">{{ signal.ai_reasoning }}</td></tr>
         {% endif %}

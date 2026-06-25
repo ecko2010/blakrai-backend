@@ -154,7 +154,7 @@ async def cb_change_lang(callback: CallbackQuery, db_user: User, lang: str):
 async def cb_set_lang(callback: CallbackQuery, db_user: User, lang: str):
     """Set user language."""
     new_lang = callback.data.replace("lang_", "")
-    if new_lang not in ("uk", "en", "ru"):
+    if new_lang not in ("uk", "en", "ru", "ar"):
         await callback.answer("Invalid language")
         return
 

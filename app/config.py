@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     TELEGRAM_CHANNEL_EN_PRO: int = 0
     TELEGRAM_CHANNEL_RU_FREE: int = 0
     TELEGRAM_CHANNEL_RU_PRO: int = 0
+    TELEGRAM_CHANNEL_AR_FREE: int = 0
+    TELEGRAM_CHANNEL_AR_PRO: int = 0
     TELEGRAM_ADMIN_IDS: str = ""
     BOT_USERNAME: str = ""
 
@@ -116,7 +118,7 @@ class Settings(BaseSettings):
     def all_channel_ids(self) -> dict[str, int]:
         """Return mapping {label: channel_id} for all configured channels."""
         channels = {}
-        for lang in ("uk", "en", "ru"):
+        for lang in ("uk", "en", "ru", "ar"):
             for tier in ("free", "pro"):
                 cid = self.get_channel_id(lang, tier)
                 if cid:

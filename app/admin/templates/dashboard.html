@@ -19,7 +19,7 @@
     {% endif %}
     <span class="badge bg-dark border" style="border-color: var(--border-color) !important;">
       <span class="status-dot {% if scheduler_running %}online{% else %}offline{% endif %}"></span>
-      Планувальник ({{ scheduler_jobs }})
+      Scheduler ({{ scheduler_jobs }})
     </span>
     <span class="badge bg-dark border" style="border-color: var(--border-color) !important;">
       <span class="status-dot {% if redis_ok %}online{% else %}offline{% endif %}"></span>
@@ -77,7 +77,7 @@
 <div class="row g-3 mb-4">
   <div class="col-lg-2 col-md-4 col-6">
     <div class="stat-card">
-      <div class="stat-label">Закрито</div>
+      <div class="stat-label">Closed</div>
       <div class="stat-value" style="font-size:1.3rem">{{ total_closed }}</div>
       <div class="stat-sub">{{ total_wins }} wins</div>
     </div>
@@ -117,8 +117,8 @@
 <!-- Recent signals table -->
 <div class="card">
   <div class="card-header d-flex justify-content-between align-items-center">
-    <span><i class="bi bi-lightning-charge-fill text-yellow"></i> Останні signals</span>
-    <a href="/admin/signals" class="btn btn-sm btn-outline-secondary">Всі signals <i class="bi bi-arrow-right"></i></a>
+    <span><i class="bi bi-lightning-charge-fill text-yellow"></i> Recent signals</span>
+    <a href="/admin/signals" class="btn btn-sm btn-outline-secondary">All signals <i class="bi bi-arrow-right"></i></a>
   </div>
   <div class="table-responsive">
     <table class="table mb-0">

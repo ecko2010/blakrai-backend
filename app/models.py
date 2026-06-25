@@ -16,6 +16,7 @@ class Language(str, enum.Enum):
     UK = "uk"
     EN = "en"
     RU = "ru"
+    AR = "ar"
 
 
 class Tier(str, enum.Enum):

@@ -41,6 +41,7 @@ def language_kb() -> InlineKeyboardMarkup:
         ],
         [
             InlineKeyboardButton(text="🇷🇺 Русский", callback_data="lang_ru"),
+            InlineKeyboardButton(text="🇪🇬 العربية", callback_data="lang_ar"),
         ],
     ])
 
