@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}Алерти{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="bi bi-bell-fill text-blue"></i> Алерти</h1>
+</div>
+
+<!-- Stats cards -->
+<div class="row g-3 mb-4">
+  <div class="col-md-3 col-6">
+    <div class="stat-card text-center">
+      <div class="stat-label">Всього алертів</div>
+      <div class="stat-value" style="font-size:1.3rem">{{ total_alerts }}</div>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="stat-card text-center">
+      <div class="stat-label">Активних</div>
+      <div class="stat-value text-green" style="font-size:1.3rem">{{ active_alerts }}</div>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="stat-card text-center">
+      <div class="stat-label">Спрацювань</div>
+      <div class="stat-value" style="font-size:1.3rem">{{ total_triggers }}</div>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="stat-card text-center">
+      <div class="stat-label">Типів алертів</div>
+      <div class="stat-value" style="font-size:1.3rem">{{ type_counts|length }}</div>
+    </div>
+  </div>
+</div>
+
+<!-- Type breakdown -->
+{% if type_counts %}
+<div class="card mb-4">
+  <div class="card-header"><i class="bi bi-pie-chart"></i> По типах</div>
+  <div class="card-body">
+    <div class="row g-2">
+      {% for atype, count in type_counts.items() %}
+      <div class="col-auto">
+        <span class="badge bg-secondary" style="font-size: 0.85rem;">{{ atype }}: {{ count }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div class="row g-3">
+  <!-- Active alerts -->
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header"><i class="bi bi-bell"></i> Алерти користувачів</div>
+      <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+        <table class="table table-sm mb-0">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Тип</th>
+              <th>Монета</th>
+              <th>Параметри</th>
+              <th>Акт.</th>
+              <th>Створено</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in alerts %}
+            <tr>
+              <td>{{ a.user_id }}</td>
+              <td><span class="badge bg-secondary small">{{ a.alert_type.value }}</span></td>
+              <td>{{ a.coin_symbol or '—' }}</td>
+              <td class="small">{{ a.params or '—' }}</td>
+              <td>
+                {% if a.is_active %}
+                <span class="badge bg-success">✓</span>
+                {% else %}
+                <span class="badge bg-dark">✗</span>
+                {% endif %}
+              </td>
+              <td class="small">{{ a.created_at.strftime('%d.%m %H:%M') if a.created_at else '—' }}</td>
+            </tr>
+            {% endfor %}
+            {% if not alerts %}
+            <tr><td colspan="6" class="text-center text-muted py-3">Алертів немає</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trigger logs -->
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header"><i class="bi bi-journal-text"></i> Журнал спрацювань</div>
+      <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+        <table class="table table-sm mb-0">
+          <thead>
+            <tr>
+              <th>Alert</th>
+              <th>User</th>
+              <th>Повідомл.</th>
+              <th>Дата</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for l in logs %}
+            <tr>
+              <td>#{{ l.alert_id }}</td>
+              <td>{{ l.user_id }}</td>
+              <td class="small" style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                {{ l.details if l.details else '—' }}
+              </td>
+              <td class="small">{{ l.created_at.strftime('%d.%m %H:%M') if l.created_at else '—' }}</td>
+            </tr>
+            {% endfor %}
+            {% if not logs %}
+            <tr><td colspan="4" class="text-center text-muted py-3">Спрацювань немає</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

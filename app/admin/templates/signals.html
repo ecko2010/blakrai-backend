@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% block title %}Сигнали{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="bi bi-broadcast-pin text-blue"></i> Сигнали</h1>
+  <span class="page-meta">Знайдено: {{ total }} · Стор. {{ page }}/{{ total_pages }}</span>
+</div>
+
+<!-- Filters -->
+<div class="card mb-4">
+  <div class="card-body">
+    <form class="row g-3 align-items-end" method="get" action="/admin/signals">
+      <div class="col-md-3">
+        <label class="form-label small text-muted">Статус</label>
+        <select name="status" class="form-select form-select-sm">
+          <option value="">Всі</option>
+          {% for s in statuses %}
+          <option value="{{ s }}" {% if filter_status == s %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small text-muted">Монета</label>
+        <input type="text" name="coin" value="{{ filter_coin }}" placeholder="BTC, ETH..." class="form-control form-control-sm">
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-sm btn-primary w-100">Фільтр</button>
+      </div>
+      <div class="col-md-2">
+        <a href="/admin/signals" class="btn btn-sm btn-outline-secondary w-100">Скинути</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Cleanup notice -->
+{% if cleaned is not none %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+  ✅ Видалено <strong>{{ cleaned }}</strong> сигналів.
+  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endif %}
+
+<!-- Cleanup -->
+<div class="card mb-4">
+  <div class="card-header"><i class="bi bi-trash"></i> Очистка сигналів</div>
+  <div class="card-body">
+    <div class="row g-2">
+      <div class="col-auto">
+        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('Видалити всі сигнали з цим статусом?')">
+          <input type="hidden" name="status_filter" value="stopped">
+          <button class="btn btn-sm btn-outline-danger">🛑 Stopped ({{ count_stopped }})</button>
+        </form>
+      </div>
+      <div class="col-auto">
+        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('Видалити всі сигнали з цим статусом?')">
+          <input type="hidden" name="status_filter" value="expired">
+          <button class="btn btn-sm btn-outline-warning">⏰ Expired ({{ count_expired }})</button>
+        </form>
+      </div>
+      <div class="col-auto">
+        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('Видалити всі сигнали з цим статусом?')">
+          <input type="hidden" name="status_filter" value="closed">
+          <button class="btn btn-sm btn-outline-secondary">📋 Closed ({{ count_closed }})</button>
+        </form>
+      </div>
+      <div class="col-auto">
+        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('Видалити всі сигнали з цим статусом?')">
+          <input type="hidden" name="status_filter" value="cancelled">
+          <button class="btn btn-sm btn-outline-secondary">❌ Cancelled ({{ count_cancelled }})</button>
+        </form>
+      </div>
+      <div class="col-auto">
+        <form method="post" action="/admin/signals/cleanup" onsubmit="return confirm('⚠️ Видалити ВСІ закриті сигнали? Цю дію неможливо скасувати!')">
+          <input type="hidden" name="status_filter" value="all_closed">
+          <button class="btn btn-sm btn-danger">🗑 Всі закриті ({{ count_stopped + count_expired + count_closed + count_cancelled }})</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Results -->
+<div class="card">
+  <div class="card-header d-flex justify-content-between">
+    <span>Знайдено: {{ total }}</span>
+    <span>Стор. {{ page }} / {{ total_pages }}</span>
+  </div>
+  <div class="table-responsive">
+      <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Монета</th>
+          <th>Напрям</th>
+          <th>Вхід</th>
+          <th>TP1/2/3</th>
+          <th>SL</th>
+          <th>Статус</th>
+          <th>PnL</th>
+          <th>Біржа</th>
+          <th>Тір</th>
+          <th>Confidence</th>
+          <th>Дата</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in signals %}
+        <tr>
+          <td><a href="/admin/signals/{{ s.id }}" class="text-info">#{{ s.id }}</a></td>
+          <td><strong>{{ s.coin_symbol }}</strong></td>
+          <td>{{ s.direction.value|direction_badge }}</td>
+          <td>{{ s.entry_price|fmt_price }}</td>
+          <td class="small">
+            {{ s.tp1|fmt_price }} / {{ s.tp2|fmt_price }} / {{ s.tp3|fmt_price }}
+          </td>
+          <td>{{ s.stop_loss|fmt_price }}</td>
+          <td>{{ s.status.value|status_badge }}</td>
+          <td class="{{ s.pnl_percent|pnl_color }}">{{ s.pnl_percent|fmt_pct }}</td>
+          <td>{{ s.exchange }}</td>
+          <td>{{ s.min_tier.value if s.min_tier else 'FREE' }}</td>
+          <td>{{ "%.0f"|format(s.confidence_score) if s.confidence_score else '—' }}%</td>
+          <td class="small">{{ s.created_at.strftime('%d.%m %H:%M') if s.created_at else '—' }}</td>
+        </tr>
+        {% endfor %}
+        {% if not signals %}
+        <tr><td colspan="12" class="text-center text-muted py-4">Сигнали не знайдені</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Pagination -->
+{% if total_pages > 1 %}
+<nav class="mt-3">
+  <ul class="pagination pagination-sm justify-content-center">
+    {% if page > 1 %}
+    <li class="page-item"><a class="page-link bg-dark text-white border-secondary" href="?status={{ filter_status }}&coin={{ filter_coin }}&page={{ page - 1 }}">«</a></li>
+    {% endif %}
+    {% for p in range(1, total_pages + 1) %}
+      {% if p == page %}
+      <li class="page-item active"><span class="page-link">{{ p }}</span></li>
+      {% elif p <= 3 or p >= total_pages - 2 or (p >= page - 2 and p <= page + 2) %}
+      <li class="page-item"><a class="page-link bg-dark text-white border-secondary" href="?status={{ filter_status }}&coin={{ filter_coin }}&page={{ p }}">{{ p }}</a></li>
+      {% elif p == 4 or p == total_pages - 3 %}
+      <li class="page-item disabled"><span class="page-link bg-dark text-muted border-secondary">…</span></li>
+      {% endif %}
+    {% endfor %}
+    {% if page < total_pages %}
+    <li class="page-item"><a class="page-link bg-dark text-white border-secondary" href="?status={{ filter_status }}&coin={{ filter_coin }}&page={{ page + 1 }}">»</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+{% endblock %}

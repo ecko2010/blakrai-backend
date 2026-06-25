@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% block title %}Дашборд{% endblock %}
+
+{% block content %}
+<!-- Page header -->
+<div class="page-header">
+  <div>
+    <h1><i class="bi bi-grid-1x2-fill text-blue"></i> Дашборд</h1>
+    <div class="page-meta mt-1">
+      Останнє оновлення: <span id="last-update">зараз</span>
+      {% if last_scan %} · Останній скан: {{ last_scan }}{% endif %}
+    </div>
+  </div>
+  <div class="d-flex gap-2 align-items-center">
+    {% if dry_run %}
+    <span class="badge bg-warning text-dark"><i class="bi bi-exclamation-triangle"></i> DRY RUN</span>
+    {% else %}
+    <span class="badge bg-success"><i class="bi bi-check-circle"></i> PRODUCTION</span>
+    {% endif %}
+    <span class="badge bg-dark border" style="border-color: var(--border-color) !important;">
+      <span class="status-dot {% if scheduler_running %}online{% else %}offline{% endif %}"></span>
+      Планувальник ({{ scheduler_jobs }})
+    </span>
+    <span class="badge bg-dark border" style="border-color: var(--border-color) !important;">
+      <span class="status-dot {% if redis_ok %}online{% else %}offline{% endif %}"></span>
+      Redis
+    </span>
+  </div>
+</div>
+
+<!-- Primary KPI row -->
+<div class="row g-3 mb-3">
+  <div class="col-lg-3 col-md-6 col-6">
+    <div class="stat-card glow-blue">
+      <i class="bi bi-broadcast-pin stat-icon"></i>
+      <div class="stat-label">Сигнали</div>
+      <div class="stat-value">{{ total_signals }}</div>
+      <div class="stat-sub">
+        <span class="text-green"><i class="bi bi-circle-fill" style="font-size:6px"></i> {{ active_signals }} активних</span>
+        · {{ signals_today }} сьогодні
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-md-6 col-6">
+    <div class="stat-card glow-green">
+      <i class="bi bi-trophy stat-icon"></i>
+      <div class="stat-label">Вінрейт (7д)</div>
+      <div class="stat-value {% if win_rate_7d >= 60 %}text-green{% elif win_rate_7d < 45 %}text-red{% else %}text-yellow{% endif %}">{{ win_rate_7d }}%</div>
+      <div class="stat-sub">{{ wins_7d }}W / {{ losses_7d }}L · Загальний: {{ win_rate_all }}%</div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-md-6 col-6">
+    <div class="stat-card glow-{% if avg_pnl_7d >= 0 %}green{% else %}red{% endif %}">
+      <i class="bi bi-cash-stack stat-icon"></i>
+      <div class="stat-label">Сер. PnL (7д)</div>
+      <div class="stat-value {{ avg_pnl_7d|pnl_color }}">{{ avg_pnl_7d|fmt_pct }}</div>
+      <div class="stat-sub">
+        Сум. PnL:
+        <span class="{{ total_pnl|pnl_color }}">{{ total_pnl|fmt_pct }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-md-6 col-6">
+    <div class="stat-card glow-purple">
+      <i class="bi bi-people-fill stat-icon"></i>
+      <div class="stat-label">Користувачі</div>
+      <div class="stat-value">{{ total_users }}</div>
+      <div class="stat-sub">
+        <span class="text-cyan">PRO: {{ pro_users }}</span> ·
+        <span class="text-yellow">ELITE: {{ elite_users }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Secondary metrics row -->
+<div class="row g-3 mb-4">
+  <div class="col-lg-2 col-md-4 col-6">
+    <div class="stat-card">
+      <div class="stat-label">Закрито</div>
+      <div class="stat-value" style="font-size:1.3rem">{{ total_closed }}</div>
+      <div class="stat-sub">{{ total_wins }} виграшів</div>
+    </div>
+  </div>
+  <div class="col-lg-2 col-md-4 col-6">
+    <div class="stat-card">
+      <div class="stat-label">Найкращий</div>
+      <div class="stat-value text-green" style="font-size:1.3rem">{{ best_pnl|fmt_pct }}</div>
+    </div>
+  </div>
+  <div class="col-lg-2 col-md-4 col-6">
+    <div class="stat-card">
+      <div class="stat-label">Найгірший</div>
+      <div class="stat-value text-red" style="font-size:1.3rem">{{ worst_pnl|fmt_pct }}</div>
+    </div>
+  </div>
+  <div class="col-lg-2 col-md-4 col-6">
+    <div class="stat-card">
+      <div class="stat-label">LONG</div>
+      <div class="stat-value text-green" style="font-size:1.3rem">{{ long_count }}</div>
+    </div>
+  </div>
+  <div class="col-lg-2 col-md-4 col-6">
+    <div class="stat-card">
+      <div class="stat-label">SHORT</div>
+      <div class="stat-value text-red" style="font-size:1.3rem">{{ short_count }}</div>
+    </div>
+  </div>
+  <div class="col-lg-2 col-md-4 col-6">
+    <div class="stat-card">
+      <div class="stat-label">Активні алерти</div>
+      <div class="stat-value text-yellow" style="font-size:1.3rem">{{ active_alerts }}</div>
+    </div>
+  </div>
+</div>
+
+<!-- Recent signals table -->
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <span><i class="bi bi-lightning-charge-fill text-yellow"></i> Останні сигнали</span>
+    <a href="/admin/signals" class="btn btn-sm btn-outline-secondary">Всі сигнали <i class="bi bi-arrow-right"></i></a>
+  </div>
+  <div class="table-responsive">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Монета</th>
+          <th>Напрям</th>
+          <th>Вхід</th>
+          <th>SL</th>
+          <th>TP1</th>
+          <th>Статус</th>
+          <th>PnL</th>
+          <th>Confidence</th>
+          <th>Біржа</th>
+          <th>Створено</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in recent_signals %}
+        <tr>
+          <td><a href="/admin/signals/{{ s.id }}" class="text-blue text-decoration-none fw-bold">#{{ s.id }}</a></td>
+          <td><strong>{{ s.coin_symbol }}</strong></td>
+          <td>{{ s.direction.value|direction_badge }}</td>
+          <td>{{ s.entry_price|fmt_price }}</td>
+          <td class="text-red">{{ s.stop_loss|fmt_price }}</td>
+          <td class="text-green">{{ s.tp1|fmt_price }}</td>
+          <td>{{ s.status.value|status_badge }}</td>
+          <td class="{{ s.pnl_percent|pnl_color }} fw-bold">{{ s.pnl_percent|fmt_pct }}</td>
+          <td>{{ "%.0f"|format(s.confidence_score) }}%</td>
+          <td class="text-muted">{{ s.exchange }}</td>
+          <td class="text-muted">{{ s.created_at|time_ago }}</td>
+        </tr>
+        {% endfor %}
+        {% if not recent_signals %}
+        <tr><td colspan="11" class="text-center text-muted py-4">Сигналів поки немає</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Auto-refresh every 30 seconds
+setTimeout(() => location.reload(), 30000);
+// Show time since load
+const start = Date.now();
+setInterval(() => {
+  const sec = Math.round((Date.now() - start) / 1000);
+  const el = document.getElementById('last-update');
+  if (el) el.textContent = sec < 5 ? 'зараз' : sec + 'с тому';
+}, 1000);
+</script>
+{% endblock %}

@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% block title %}Статистика{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="bi bi-graph-up-arrow text-blue"></i> Статистика</h1>
+</div>
+
+<!-- Period selector -->
+<div class="d-flex gap-2 mb-4">
+  {% for p, label in [('1d', '1 день'), ('7d', '7 днів'), ('30d', '30 днів'), ('90d', '90 днів'), ('all', 'Все')] %}
+  <a href="?period={{ p }}" class="btn btn-sm {% if period == p %}btn-primary{% else %}btn-outline-secondary{% endif %}">{{ label }}</a>
+  {% endfor %}
+</div>
+
+{% if stats %}
+<!-- Main stats cards -->
+<div class="row g-3 mb-4">
+  <div class="col-md-2 col-6">
+    <div class="stat-card text-center">
+      <div class="stat-label">Всього</div>
+      <div class="stat-value" style="font-size:1.3rem">{{ stats.total }}</div>
+    </div>
+  </div>
+  <div class="col-md-2 col-6">
+    <div class="stat-card text-center">
+      <div class="stat-label">Вінрейт</div>
+      <div class="stat-value {% if stats.win_rate >= 60 %}text-green{% elif stats.win_rate < 45 %}text-red{% endif %}" style="font-size:1.3rem">
+        {{ "%.1f"|format(stats.win_rate) }}%
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2 col-6">
+    <div class="stat-card text-center">
+      <div class="stat-label">Сер. Win</div>
+      <div class="stat-value text-green" style="font-size:1.3rem">+{{ "%.2f"|format(stats.avg_win) }}%</div>
+    </div>
+  </div>
+  <div class="col-md-2 col-6">
+    <div class="stat-card text-center">
+      <div class="stat-label">Сер. Loss</div>
+      <div class="stat-value text-red" style="font-size:1.3rem">{{ "%.2f"|format(stats.avg_loss) }}%</div>
+    </div>
+  </div>
+  <div class="col-md-2 col-6">
+    <div class="stat-card text-center">
+      <div class="stat-label">TP1 Rate</div>
+      <div class="stat-value text-green" style="font-size:1.3rem">{{ "%.1f"|format(stats.tp1_hit_rate) }}%</div>
+    </div>
+  </div>
+  <div class="col-md-2 col-6">
+    <div class="stat-card text-center">
+      <div class="stat-label">TP2 Rate</div>
+      <div class="stat-value" style="font-size:1.3rem">{{ "%.1f"|format(stats.tp2_hit_rate) }}%</div>
+    </div>
+  </div>
+  <div class="col-md-2 col-6">
+    <div class="stat-card text-center">
+      <div class="stat-label">TP3 Rate</div>
+      <div class="stat-value" style="font-size:1.3rem">{{ "%.1f"|format(stats.tp3_hit_rate) }}%</div>
+    </div>
+  </div>
+</div>
+
+<!-- Detailed stats -->
+<div class="row g-3 mb-4">
+  <div class="col-md-6">
+    <div class="card p-3">
+      <h6 class="text-muted mb-3">Основні метрики</h6>
+      <table class="table table-sm mb-0">
+        <tr><td class="text-muted">Виграші</td><td>{{ stats.wins }}</td></tr>
+        <tr><td class="text-muted">Програші</td><td>{{ stats.losses }}</td></tr>
+        <tr><td class="text-muted">Макс PnL</td><td class="text-green">{{ "%.2f"|format(stats.best_trade) }}%</td></tr>
+        <tr><td class="text-muted">Мін PnL</td><td class="text-red">{{ "%.2f"|format(stats.worst_trade) }}%</td></tr>
+        <tr><td class="text-muted">Серія виграшів</td><td>{{ stats.win_streak }}</td></tr>
+        <tr><td class="text-muted">Серія програшів</td><td>{{ stats.loss_streak }}</td></tr>
+        {% if stats.sharpe_ratio is defined and stats.sharpe_ratio is not none %}
+        <tr><td class="text-muted">Sharpe Ratio</td><td>{{ "%.2f"|format(stats.sharpe_ratio) }}</td></tr>
+        {% endif %}
+        {% if stats.sortino_ratio is defined and stats.sortino_ratio is not none %}
+        <tr><td class="text-muted">Sortino Ratio</td><td>{{ "%.2f"|format(stats.sortino_ratio) }}</td></tr>
+        {% endif %}
+        {% if stats.expectancy is defined and stats.expectancy is not none %}
+        <tr><td class="text-muted">Expectancy</td><td>{{ "%.2f"|format(stats.expectancy) }}%</td></tr>
+        {% endif %}
+      </table>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card p-3">
+      <h6 class="text-muted mb-3">LONG vs SHORT</h6>
+      <table class="table table-sm mb-0">
+        <thead>
+          <tr>
+            <th></th>
+            <th class="text-green">LONG</th>
+            <th class="text-red">SHORT</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-muted">К-ть</td>
+            <td>{{ stats.longs_count }}</td>
+            <td>{{ stats.shorts_count }}</td>
+          </tr>
+          <tr>
+            <td class="text-muted">Вінрейт</td>
+            <td>{{ "%.1f"|format(stats.longs_win_rate) }}%</td>
+            <td>{{ "%.1f"|format(stats.shorts_win_rate) }}%</td>
+          </tr>
+          <tr>
+            <td class="text-muted">Сер. Win</td>
+            <td class="text-green">+{{ "%.2f"|format(stats.avg_win) }}%</td>
+            <td class="text-green">+{{ "%.2f"|format(stats.avg_win) }}%</td>
+          </tr>
+          <tr>
+            <td class="text-muted">Сер. Loss</td>
+            <td class="text-red">{{ "%.2f"|format(stats.avg_loss) }}%</td>
+            <td class="text-red">{{ "%.2f"|format(stats.avg_loss) }}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Exchange breakdown -->
+{% if exchange_stats %}
+<div class="card mb-4">
+  <div class="card-header"><i class="bi bi-bar-chart"></i> По біржах</div>
+  <div class="table-responsive">
+    <table class="table table-sm mb-0">
+      <thead>
+        <tr>
+          <th>Біржа</th>
+          <th>Сигналів</th>
+          <th>Виграшів</th>
+          <th>Вінрейт</th>
+          <th>Сер. PnL</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for e in exchange_stats|sort(attribute='total', reverse=True) %}
+        <tr>
+          <td><strong>{{ e.exchange }}</strong></td>
+          <td>{{ e.total }}</td>
+          <td>{{ e.wins }}</td>
+          <td class="{% if e.win_rate >= 60 %}text-green{% elif e.win_rate < 45 %}text-red{% endif %}">{{ e.win_rate }}%</td>
+          <td class="{% if e.avg_pnl > 0 %}text-green{% elif e.avg_pnl < 0 %}text-red{% endif %}">{{ e.avg_pnl }}%</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+<!-- Leaderboard -->
+{% if leaderboard %}
+<div class="card">
+  <div class="card-header"><i class="bi bi-trophy"></i> Лідерборд (топ-15 монет)</div>
+  <div class="table-responsive">
+    <table class="table table-sm mb-0">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Монета</th>
+          <th>Сигналів</th>
+          <th>Сер. PnL</th>
+          <th>Сум. PnL</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in leaderboard %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td><strong>{{ item.coin }}</strong></td>
+          <td>{{ item.total_signals }}</td>
+          <td class="{% if item.avg_pnl > 0 %}text-green{% elif item.avg_pnl < 0 %}text-red{% endif %}">
+            {{ "%.2f"|format(item.avg_pnl) }}%
+          </td>
+          <td class="{% if item.total_pnl > 0 %}text-green{% elif item.total_pnl < 0 %}text-red{% endif %}">
+            {{ "%.2f"|format(item.total_pnl) }}%
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+{% else %}
+<div class="card p-4 text-center text-muted">
+  <i class="bi bi-exclamation-triangle" style="font-size: 2rem;"></i>
+  <p class="mt-2">Помилка обчислення статистики</p>
+</div>
+{% endif %}
+{% endblock %}

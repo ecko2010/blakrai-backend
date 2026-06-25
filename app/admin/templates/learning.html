@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% block title %}AI Навчання{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="bi bi-cpu-fill text-blue"></i> AI Навчання</h1>
+</div>
+
+<!-- Health overview -->
+<div class="row g-3 mb-4">
+  <div class="col-md-2 col-6">
+    <div class="stat-card text-center">
+      <div class="stat-label">Всього фідбеків</div>
+      <div class="stat-value" style="font-size:1.3rem">{{ total_fb }}</div>
+    </div>
+  </div>
+  <div class="col-md-2 col-6">
+    <div class="stat-card text-center">
+      <div class="stat-label">Застосовано</div>
+      <div class="stat-value text-green" style="font-size:1.3rem">{{ applied_fb }}</div>
+    </div>
+  </div>
+  <div class="col-md-2 col-6">
+    <div class="stat-card text-center">
+      <div class="stat-label">Очікують</div>
+      <div class="stat-value text-yellow" style="font-size:1.3rem">{{ unapplied_fb }}</div>
+    </div>
+  </div>
+  {% if health %}
+  <div class="col-md-2 col-6">
+    <div class="stat-card text-center">
+      <div class="stat-label">Вінрейт (7д)</div>
+      <div class="stat-value {% if health.get('win_rate', 0) >= 60 %}text-green{% elif health.get('win_rate', 0) < 45 %}text-red{% endif %}" style="font-size:1.3rem">
+        {{ "%.1f"|format(health.get('win_rate', 0)) }}%
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2 col-6">
+    <div class="stat-card text-center">
+      <div class="stat-label">Сер. PnL (7д)</div>
+      <div class="stat-value {% if health.get('avg_pnl', 0) > 0 %}text-green{% elif health.get('avg_pnl', 0) < 0 %}text-red{% endif %}" style="font-size:1.3rem">
+        {{ "%.2f"|format(health.get('avg_pnl', 0)) }}%
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2 col-6">
+    <div class="stat-card text-center">
+      <div class="stat-label">MIN Confidence</div>
+      <div class="stat-value" style="font-size:1.3rem">{{ "%.0f"|format(health.get('min_confidence', 0) * 100) }}%</div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Manual trigger -->
+<div class="card mb-4">
+  <div class="card-body d-flex justify-content-between align-items-center">
+    <div>
+      <h6 class="mb-1"><i class="bi bi-lightning-charge text-yellow"></i> Ручний цикл навчання</h6>
+      <small class="text-muted">Запустити apply_accumulated_corrections() — проаналізує {{ unapplied_fb }} незастосованих фідбеків</small>
+    </div>
+    <form method="post" action="/admin/learning/run-cycle">
+      <button type="submit" class="btn btn-warning btn-sm"
+              onclick="return confirm('Запустити цикл навчання AI?')">
+        <i class="bi bi-play-fill"></i> Запустити
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Feedback type breakdown -->
+{% if fb_types %}
+<div class="card mb-4">
+  <div class="card-header"><i class="bi bi-pie-chart"></i> Типи фідбеків</div>
+  <div class="card-body">
+    <div class="row g-2">
+      {% for fb_type, count in fb_types.items() %}
+      <div class="col-auto">
+        <span class="badge bg-secondary" style="font-size: 0.85rem;">{{ fb_type }}: {{ count }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div class="row g-3">
+  <!-- Recent feedbacks -->
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header"><i class="bi bi-chat-dots"></i> Останні AI фідбеки</div>
+      <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+        <table class="table table-sm mb-0">
+          <thead>
+            <tr>
+              <th>Signal</th>
+              <th>Тип</th>
+              <th>Корекція</th>
+              <th>Засто.</th>
+              <th>Дата</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for fb in feedbacks %}
+            <tr>
+              <td>
+                {% if fb.signal_id %}
+                <a href="/admin/signals/{{ fb.signal_id }}" class="text-info">#{{ fb.signal_id }}</a>
+                {% else %}—{% endif %}
+              </td>
+              <td><span class="badge bg-secondary small">{{ fb.feedback_type }}</span></td>
+              <td class="small" style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ fb.lesson_learned }}">
+                {{ fb.lesson_learned[:150] if fb.lesson_learned else '—' }}
+              </td>
+              <td>
+                {% if fb.applied %}
+                <span class="badge bg-success">✓</span>
+                {% else %}
+                <span class="badge bg-warning text-dark">⏳</span>
+                {% endif %}
+              </td>
+              <td class="small">{{ fb.created_at.strftime('%d.%m %H:%M') if fb.created_at else '—' }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lessons & Adjustments -->
+  <div class="col-lg-5">
+    <!-- System adjustments -->
+    {% if adjustments %}
+    <div class="card mb-3">
+      <div class="card-header"><i class="bi bi-gear"></i> Системні корекції</div>
+      <div class="card-body p-2" style="max-height: 250px; overflow-y: auto;">
+        {% for adj in adjustments %}
+        <div class="border-bottom border-secondary py-2 px-2">
+          <div class="small text-muted">{{ adj.created_at.strftime('%d.%m %H:%M') if adj.created_at else '' }}</div>
+          <div class="small">{{ adj.content[:200] if adj.content else '—' }}</div>
+          {% if adj.metadata_ %}
+          <div class="mt-1">
+            {% for k, v in (adj.metadata_ or {}).items() %}
+            <span class="badge bg-dark border border-secondary small">{{ k }}: {{ v }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Lessons learned -->
+    <div class="card">
+      <div class="card-header"><i class="bi bi-lightbulb"></i> Уроки AI</div>
+      <div class="card-body p-2" style="max-height: 350px; overflow-y: auto;">
+        {% for lesson in lessons %}
+        <div class="border-bottom border-secondary py-2 px-2">
+          <div class="d-flex justify-content-between">
+            <span class="badge bg-dark border border-secondary small">{{ lesson.category }}</span>
+            <small class="text-muted">{{ lesson.created_at.strftime('%d.%m %H:%M') if lesson.created_at else '' }}</small>
+          </div>
+          <div class="small mt-1">{{ lesson.content[:300] if lesson.content else '—' }}</div>
+        </div>
+        {% endfor %}
+        {% if not lessons %}
+        <div class="text-center text-muted py-3">Уроків ще немає</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.text-yellow { color: #f0ad4e !important; }
+</style>
+{% endblock %}

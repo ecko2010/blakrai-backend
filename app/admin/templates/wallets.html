@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% block title %}Гаманці — Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-wallet2"></i> Трекінг гаманців</h2>
+</div>
+
+<!-- Stats Row -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-number">{{ total_wallets }}</div>
+            <div class="stat-label">Всього гаманців</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-number">{{ active_wallets }}</div>
+            <div class="stat-label">Активних</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-number">${{ "%.2f"|format(total_value) }}</div>
+            <div class="stat-label">Загальна вартість</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-number">{{ unique_users }}</div>
+            <div class="stat-label">Користувачів</div>
+        </div>
+    </div>
+</div>
+
+<!-- Chain distribution -->
+<div class="row g-3 mb-4">
+    {% for chain, count in chain_stats.items() %}
+    <div class="col-auto">
+        <span class="badge bg-secondary fs-6 px-3 py-2">{{ chain|upper }}: {{ count }}</span>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Filters -->
+<form class="row g-2 mb-4" method="get">
+    <div class="col-md-3">
+        <input type="text" name="q" class="form-control form-control-sm bg-dark text-light border-secondary"
+               placeholder="Пошук (адреса, юзер)" value="{{ filter_q }}">
+    </div>
+    <div class="col-md-2">
+        <select name="chain" class="form-select form-select-sm bg-dark text-light border-secondary">
+            <option value="">Всі мережі</option>
+            <option value="ethereum" {{ 'selected' if filter_chain == 'ethereum' }}>Ethereum</option>
+            <option value="bsc" {{ 'selected' if filter_chain == 'bsc' }}>BSC</option>
+            <option value="arbitrum" {{ 'selected' if filter_chain == 'arbitrum' }}>Arbitrum</option>
+            <option value="base" {{ 'selected' if filter_chain == 'base' }}>Base</option>
+            <option value="polygon" {{ 'selected' if filter_chain == 'polygon' }}>Polygon</option>
+            <option value="solana" {{ 'selected' if filter_chain == 'solana' }}>Solana</option>
+            <option value="tron" {{ 'selected' if filter_chain == 'tron' }}>Tron</option>
+        </select>
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-sm btn-primary" type="submit"><i class="bi bi-search"></i> Фільтр</button>
+    </div>
+    {% if filter_q or filter_chain %}
+    <div class="col-auto">
+        <a href="/admin/wallets" class="btn btn-sm btn-outline-secondary">Скинути</a>
+    </div>
+    {% endif %}
+</form>
+
+<!-- Table -->
+<div class="table-responsive">
+    <table class="table table-dark table-hover table-sm align-middle">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Користувач</th>
+                <th>Мережа</th>
+                <th>Адреса</th>
+                <th>Назва</th>
+                <th class="text-end">Вартість</th>
+                <th class="text-end">Токенів</th>
+                <th>Останнє скан.</th>
+                <th>Статус</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for w in wallets %}
+            <tr>
+                <td>{{ w.id }}</td>
+                <td>
+                    {% if w.user_info %}
+                    <small>@{{ w.user_info.username or w.user_info.telegram_id }}</small>
+                    <br><span class="badge bg-{{ 'success' if w.user_info.tier == 'elite' else 'primary' if w.user_info.tier == 'pro' else 'secondary' }} badge-sm">{{ w.user_info.tier|upper }}</span>
+                    {% else %}
+                    <small class="text-muted">uid:{{ w.user_id }}</small>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge bg-info text-dark">{{ w.chain.value|upper }}</span>
+                </td>
+                <td>
+                    <code class="small">{{ w.address[:8] }}...{{ w.address[-6:] }}</code>
+                </td>
+                <td>{{ w.label or '—' }}</td>
+                <td class="text-end">
+                    {% if w.total_value_usd %}
+                    <b>${{ "%.2f"|format(w.total_value_usd) }}</b>
+                    {% else %}
+                    <span class="text-muted">—</span>
+                    {% endif %}
+                </td>
+                <td class="text-end">{{ w.tokens|length if w.tokens else 0 }}</td>
+                <td>
+                    {% if w.last_scanned_at %}
+                    <small>{{ w.last_scanned_at.strftime('%d.%m %H:%M') }}</small>
+                    {% else %}
+                    <span class="text-muted">—</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if w.is_active %}
+                    <span class="badge bg-success">Active</span>
+                    {% else %}
+                    <span class="badge bg-danger">Inactive</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if total_pages > 1 %}
+<nav>
+    <ul class="pagination pagination-sm justify-content-center">
+        {% if page > 1 %}
+        <li class="page-item"><a class="page-link bg-dark border-secondary" href="?page={{ page-1 }}&q={{ filter_q }}&chain={{ filter_chain }}">«</a></li>
+        {% endif %}
+        {% for p in range(1, total_pages + 1) %}
+            {% if p >= page - 2 and p <= page + 2 %}
+            <li class="page-item {{ 'active' if p == page }}">
+                <a class="page-link bg-dark border-secondary" href="?page={{ p }}&q={{ filter_q }}&chain={{ filter_chain }}">{{ p }}</a>
+            </li>
+            {% endif %}
+        {% endfor %}
+        {% if page < total_pages %}
+        <li class="page-item"><a class="page-link bg-dark border-secondary" href="?page={{ page+1 }}&q={{ filter_q }}&chain={{ filter_chain }}">»</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+{% endblock %}

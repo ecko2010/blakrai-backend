@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block title %}Система{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="bi bi-gear-fill text-blue"></i> Система</h1>
+</div>
+
+<!-- Health indicators -->
+<div class="row g-3 mb-4">
+  <div class="col-md-3 col-6">
+    <div class="card p-3">
+      <div class="d-flex align-items-center gap-2">
+        <span style="width:12px;height:12px;border-radius:50%;display:inline-block;" class="{% if db_ok %}bg-success{% else %}bg-danger{% endif %}"></span>
+        <span>PostgreSQL</span>
+      </div>
+      <small class="text-muted mt-1 d-block">{{ db_stats|length }} таблиць</small>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="card p-3">
+      <div class="d-flex align-items-center gap-2">
+        <span style="width:12px;height:12px;border-radius:50%;display:inline-block;" class="{% if redis_ok %}bg-success{% else %}bg-danger{% endif %}"></span>
+        <span>Redis</span>
+      </div>
+      {% if redis_info %}
+      <small class="text-muted mt-1 d-block">{{ redis_info.used_memory }} · {{ redis_info.keys }} ключів</small>
+      {% endif %}
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="card p-3">
+      <div class="d-flex align-items-center gap-2">
+        <span style="width:12px;height:12px;border-radius:50%;display:inline-block;" class="{% if scheduler_running %}bg-success{% else %}bg-danger{% endif %}"></span>
+        <span>Планувальник</span>
+      </div>
+      <small class="text-muted mt-1 d-block">{{ jobs|length }} задач</small>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="card p-3">
+      <div class="text-muted small">Останній скан</div>
+      <strong>{{ last_scan if last_scan else '—' }}</strong>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <!-- DB table sizes -->
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header"><i class="bi bi-database"></i> Таблиці БД</div>
+      <div class="table-responsive">
+        <table class="table table-sm mb-0">
+          <thead>
+            <tr><th>Таблиця</th><th>Рядків</th></tr>
+          </thead>
+          <tbody>
+            {% for name, count in db_stats.items()|sort(attribute='1', reverse=True) %}
+            <tr>
+              <td>{{ name }}</td>
+              <td>{{ "{:,}".format(count) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Env config -->
+  <div class="col-md-6">
+    <div class="card mb-3">
+      <div class="card-header"><i class="bi bi-sliders"></i> Конфігурація</div>
+      <div class="table-responsive">
+        <table class="table table-sm mb-0">
+          <tbody>
+            {% for key, val in env_config.items() %}
+            <tr>
+              <td class="text-muted">{{ key }}</td>
+              <td>
+                {% if val is sameas true %}
+                <span class="badge bg-success">True</span>
+                {% elif val is sameas false %}
+                <span class="badge bg-secondary">False</span>
+                {% else %}
+                {{ val }}
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    {% if redis_info %}
+    <div class="card">
+      <div class="card-header"><i class="bi bi-memory"></i> Redis</div>
+      <div class="table-responsive">
+        <table class="table table-sm mb-0">
+          <tbody>
+            <tr><td class="text-muted">Пам'ять</td><td>{{ redis_info.used_memory }}</td></tr>
+            <tr><td class="text-muted">Клієнтів</td><td>{{ redis_info.connected_clients }}</td></tr>
+            <tr><td class="text-muted">Ключів</td><td>{{ redis_info.keys }}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Scheduler jobs -->
+{% if jobs %}
+<div class="card mb-4">
+  <div class="card-header"><i class="bi bi-clock"></i> Задачі планувальника</div>
+  <div class="table-responsive">
+    <table class="table table-sm mb-0">
+      <thead>
+        <tr><th>ID</th><th>Тригер</th><th>Наступний запуск</th></tr>
+      </thead>
+      <tbody>
+        {% for j in jobs %}
+        <tr>
+          <td><code>{{ j.id }}</code></td>
+          <td class="small">{{ j.trigger }}</td>
+          <td>{{ j.next_run }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+<!-- Exchange connectivity -->
+{% if exchange_status %}
+<div class="card">
+  <div class="card-header"><i class="bi bi-globe"></i> Біржі</div>
+  <div class="table-responsive">
+    <table class="table table-sm mb-0">
+      <thead>
+        <tr><th>Біржа</th><th>Статус</th><th>BTC Ціна</th></tr>
+      </thead>
+      <tbody>
+        {% for name, info in exchange_status.items() %}
+        <tr>
+          <td><strong>{{ name }}</strong></td>
+          <td>
+            {% if info.ok %}
+            <span class="badge bg-success">Online</span>
+            {% else %}
+            <span class="badge bg-danger">Offline</span>
+            {% endif %}
+          </td>
+          <td>{% if info.price %}${{ "{:,.2f}".format(info.price) }}{% else %}—{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
